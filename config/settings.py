@@ -23,11 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
-ALLOWED_HOSTS = []
-
 DEBUG = bool(os.environ.get("DEBUG"))
 
+if not DEBUG:
+    ALLOWED_HOSTS = ["z7qj8d5505.execute-api.ap-northeast-2.amazonaws.com"]
+    
 # Application definition
 
 INSTALLED_APPS = [
