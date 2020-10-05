@@ -1,0 +1,10 @@
+{
+    "python.pythonPath": "/Users/rams/.local/share/virtualenvs/meok-server-y-_0kqFR/bin/python",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "python.linting.flake8Args": [
+        "--max-line-length = 88"
+    ]
+}
