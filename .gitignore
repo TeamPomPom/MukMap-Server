@@ -133,3 +133,6 @@ dmypy.json
 .DS_Store
 uploads/
 node_modules/
+
+# Zappa env
+zappa_settings.json
