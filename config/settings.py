@@ -25,6 +25,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG"))
 
+SERVICE = bool(os.environ.get("SERVICE"))
+
 if not DEBUG:
     ALLOWED_HOSTS = ["z7qj8d5505.execute-api.ap-northeast-2.amazonaws.com"]
     
@@ -131,7 +133,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# For test app static settings 
+if not SERVICE:
+    STATICFILES_STORAGE = 'config.custom_storages.StaticStorage'
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = "zappa-meok-test"
+    AWS_DEFAULT_ACL = "public-read"
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+
+# TODO : For service app static settings
+
 # For sentry settings 
 if not DEBUG:
     sentry_sdk.init(
