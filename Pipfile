@@ -18,6 +18,7 @@ pyjwt = "*"
 mysqlclient = "*"
 mysql-connector-python = "*"
 django-storages = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.8"
