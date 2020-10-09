@@ -17,6 +17,7 @@ djangorestframework = "*"
 pyjwt = "*"
 mysqlclient = "*"
 mysql-connector-python = "*"
+django-storages = "*"
 
 [requires]
 python_version = "3.8"
