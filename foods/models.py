@@ -1,6 +1,7 @@
 from django.db import models
 from core import models as core_models
 
+
 class FoodCategory(core_models.TimeStampedModel):
 
     """ Default food category """
@@ -11,7 +12,10 @@ class FoodCategory(core_models.TimeStampedModel):
     def __str__(self):
         return self.name
 
+
 class MainFoodCategory(FoodCategory):
+    pass
 
 
 class SubFoodCategory(FoodCategory):
+    pass
