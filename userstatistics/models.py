@@ -6,3 +6,9 @@ class UserClickStatistics(core_models.TimeStampedModel):
     user = models.ForignKey("users.User", on_delete=models.CASCADE)
     video = models.ForignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
     click_count = models.IntegerField(default=0)
+
+
+class UserSearchLog(core_models.TimeStampedModel):
+
+    search_keyword = models.CharField(max_length=200, blank=False, null=False)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
