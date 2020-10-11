@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django_countries.fields import CountryField
 from core import models as core_models
 
 
@@ -27,6 +28,7 @@ class YoutubeChannel(core_models.TimeStampedModel):
     channel_profile_img = models.CharField(max_length=200)
     channel_id = models.CharField(max_length=100)
     channel_desc = models.TextField(max_length=10000)
+    channel_country = CountryField(default="KR").formfield()
     user = models.ForeignKey(
         "User", related_name="youtube_channels", on_delete=models.SET_NULL, null=True
     )
