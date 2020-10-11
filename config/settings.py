@@ -43,7 +43,16 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-PROJECT_APPS = ["core.apps.CoreConfig"]
+PROJECT_APPS = [
+    "core.apps.CoreConfig",
+    "announcements.apps.AnnouncementsConfig",
+    "devices.apps.DevicesConfig",
+    "foods.apps.FoodsConfig",
+    "restaurants.apps.RestaurantsConfig",
+    "users.apps.UsersConfig",
+    "userstatistics.apps.UserstatisticsConfig",
+    "videos.apps.VideosConfig",
+]
 
 THIRD_PARTY_APPS = ["django_countries"]
 
