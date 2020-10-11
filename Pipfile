@@ -19,6 +19,7 @@ mysqlclient = "*"
 mysql-connector-python = "*"
 django-storages = "*"
 sentry-sdk = "*"
+django-countries = "*"
 
 [requires]
 python_version = "3.8"
