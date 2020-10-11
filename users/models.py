@@ -5,8 +5,35 @@ from core import models as core_models
 
 
 class User(AbstractUser, core_models.TimeStampedModel):
+
+    favorite = models.ManyToManyField(
+        "videos.YoutubeVideos", related_name="users", through="UserFavoriteVideo"
+    )
+    subscribe = models.ManyToManyField(
+        "YoutubeChannel", related_name="users", through="UserSubscribeChannel"
+    )
+    number_of_clicks = models.ManyToManyField(
+        "videos.YoutubeVideos", related_name="users", through="UserClickStatistics"
+    )
+
     def __str__(self):
         return self.email
+
+
+class UserClickStatistics(core_models.TimeStampedModel):
+    user = models.ForignKey("User", on_delete=models.CASCADE)
+    video = models.ForignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
+    click_count = models.IntegerField(default=0)
+
+
+class UserFavoriteVideo(core_models.TimeStampedModel):
+    user = models.ForignKey("User", on_delete=models.CASCADE)
+    video = models.ForignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
+
+
+class UserSubscribeChannel(core_models.TimeStampedModel):
+    user = models.ForignKey("User", on_delete=models.CASCADE)
+    youtube_channel = models.ForignKey("YoutubeChannel", on_delete=models.CASCADE)
 
 
 class YoutubeChannel(core_models.TimeStampedModel):
