@@ -18,13 +18,13 @@ class User(AbstractUser, core_models.TimeStampedModel):
 
 
 class UserFavoriteVideo(core_models.TimeStampedModel):
-    user = models.ForignKey("User", on_delete=models.CASCADE)
-    video = models.ForignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    video = models.ForeignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
 
 
 class UserSubscribeChannel(core_models.TimeStampedModel):
-    user = models.ForignKey("User", on_delete=models.CASCADE)
-    youtube_channel = models.ForignKey("YoutubeChannel", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    youtube_channel = models.ForeignKey("YoutubeChannel", on_delete=models.CASCADE)
 
 
 class YoutubeChannel(core_models.TimeStampedModel):
