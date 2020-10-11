@@ -8,7 +8,7 @@ class User(AbstractUser, core_models.TimeStampedModel):
         return self.email
 
 
-class Youtuber(core_models.TimeStampedModel):
+class YoutubeChannel(core_models.TimeStampedModel):
 
     NONE_REQUEST = "none_request"
     WANT_SIGN_UP = "want_sign_up"
@@ -28,11 +28,11 @@ class Youtuber(core_models.TimeStampedModel):
     channel_id = models.CharField(max_length=100)
     channel_desc = models.TextField(max_length=10000)
     user = models.ForeignKey(
-        "User", related_name="users", on_delete=models.SET_NULL, null=True
+        "User", related_name="youtube_channels", on_delete=models.SET_NULL, null=True
     )
     status = models.CharField(
         max_length=30, choices=CERTIFICATION_STATUS, default=NONE_REQUEST
     )
 
     def __str__(self):
-        return "Youtuber : ".join(self.channel_name)
+        return "Youtube channel : ".join(self.channel_name)
