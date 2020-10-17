@@ -9,6 +9,5 @@ class UserClickStatistics(core_models.TimeStampedModel):
 
 
 class UserSearchLog(core_models.TimeStampedModel):
-
     search_keyword = models.CharField(max_length=200, blank=False, null=False)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
