@@ -7,7 +7,7 @@ class FoodCategory(core_models.TimeStampedModel):
     """ Default food category """
 
     name = models.CharField(max_length=50, blank=True)
-    categoryCode = models.CharField(max_length=20, blank=True, null=True)
+    categoryCode = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         abstract = True
