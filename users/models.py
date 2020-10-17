@@ -16,15 +16,24 @@ class User(AbstractUser, core_models.TimeStampedModel):
     def __str__(self):
         return self.email
 
+    class Meta:
+        db_table = "user"
+
 
 class UserFavoriteVideo(core_models.TimeStampedModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     video = models.ForeignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = "user_favorite"
+
 
 class UserSubscribeChannel(core_models.TimeStampedModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     youtube_channel = models.ForeignKey("YoutubeChannel", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "user_subscribe_channel"
 
 
 class YoutubeChannel(core_models.TimeStampedModel):
@@ -56,3 +65,6 @@ class YoutubeChannel(core_models.TimeStampedModel):
 
     def __str__(self):
         return "Youtube channel : ".join(self.channel_name)
+
+    class Meta:
+        db_table = "youtube_channel"
