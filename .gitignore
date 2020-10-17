@@ -137,3 +137,6 @@ node_modules/
 # Zappa env
 zappa_settings.json
 meok-server-meok-*
+
+# Init raw data
+/rawdata
