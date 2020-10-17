@@ -18,9 +18,11 @@ class FoodCategory(core_models.TimeStampedModel):
 
 class MainFoodCategory(FoodCategory):
     class Meta:
+        db_table = "main_food_category"
         verbose_name_plural = "Main Food Categories"
 
 
 class SubFoodCategory(FoodCategory):
     class Meta:
+        db_table = "sub_food_category"
         verbose_name_plural = "Sub Food Categories"

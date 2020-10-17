@@ -66,3 +66,6 @@ class YoutubeVideos(core_models.TimeStampedModel):
     video_japanese_caption = models.IntegerField(null=True, blank=True)
     video_chinese_caption = models.IntegerField(null=True, blank=True)
     video_vietnamese_caption = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        db_table = "youtube_video"

@@ -9,3 +9,6 @@ class Device(TimeStampedModel):
     user = models.ForeignKey(
         "users.User", related_name="devices", on_delete=models.CASCADE, null=False
     )
+
+    class Meta:
+        db_table = "device"
