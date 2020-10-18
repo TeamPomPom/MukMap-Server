@@ -7,7 +7,7 @@ from core import models as core_models
 class User(AbstractUser, core_models.TimeStampedModel):
 
     favorite = models.ManyToManyField(
-        "videos.YoutubeVideos", related_name="users", through="UserFavoriteVideo"
+        "videos.YoutubeVideo", related_name="users", through="UserFavoriteVideo"
     )
     subscribe = models.ManyToManyField(
         "YoutubeChannel", related_name="users", through="UserSubscribeChannel"
@@ -22,7 +22,7 @@ class User(AbstractUser, core_models.TimeStampedModel):
 
 class UserFavoriteVideo(core_models.TimeStampedModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    video = models.ForeignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
+    youtube_video = models.ForeignKey("videos.YoutubeVideo", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "user_favorite"

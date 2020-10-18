@@ -4,7 +4,7 @@ from core import models as core_models
 
 class UserClickStatistics(core_models.TimeStampedModel):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    video = models.ForeignKey("videos.YoutubeVideos", on_delete=models.CASCADE)
+    youtube_video = models.ForeignKey("videos.YoutubeVideo", on_delete=models.CASCADE)
     click_count = models.IntegerField(default=0)
 
     class Meta:
