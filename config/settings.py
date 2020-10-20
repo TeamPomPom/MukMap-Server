@@ -54,9 +54,9 @@ PROJECT_APPS = [
     "videos.apps.VideosConfig",
 ]
 
-THIRD_PARTY_APPS = ["django_countries"]
+THIRD_PARTY_APPS = ["django_countries", "rest_framework"]
 
-INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
