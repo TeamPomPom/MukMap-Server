@@ -20,6 +20,7 @@ mysql-connector-python = "*"
 django-storages = "*"
 sentry-sdk = "*"
 django-countries = "*"
+isodate = "*"
 
 [requires]
 python_version = "3.8"
