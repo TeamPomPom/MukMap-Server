@@ -15,18 +15,18 @@ class YoutubeVideo(core_models.TimeStampedModel):
         on_delete=models.PROTECT,
         null=False,
     )
-    MainFoodCategory = models.ForeignKey(
+    main_food_category = models.ForeignKey(
         "foods.MainFoodCategory",
         related_name="youtube_videos",
         on_delete=models.PROTECT,
         null=False,
     )
-    SubFoodCategory = models.ManyToManyField(
+    sub_food_category = models.ManyToManyField(
         "foods.SubFoodCategory",
         related_name="youtube_videos",
         through="YoutubeVideoSubCategory",
     )
-    Restaurants = models.ForeignKey(
+    restaurant = models.ForeignKey(
         "restaurants.Restaurants",
         related_name="youtube_videos",
         on_delete=models.PROTECT,
@@ -36,9 +36,9 @@ class YoutubeVideo(core_models.TimeStampedModel):
 
     youtube_video_thumbnail = models.TextField(max_length=500, blank=True)
     youtube_video_tags = models.TextField(max_length=1000, blank=True)
-    youtube_video_duration = models.TimeField(blank=True)
+    youtube_video_duration = models.IntegerField(default=0)
     youtube_video_start_time = models.IntegerField(default=0)
-    youtube_video_published_at = models.DateTimeField(blank=True)
+    youtube_video_published_at = models.DateTimeField(blank=True, null=True)
     is_advertising = models.BooleanField(default=False, null=False)
 
     # For localized video title
@@ -80,8 +80,13 @@ class YoutubeVideo(core_models.TimeStampedModel):
     youtube_video_chinese_caption = models.IntegerField(null=True, blank=True)
     youtube_video_vietnamese_caption = models.IntegerField(null=True, blank=True)
 
+    youtube_video_memos = models.CharField(max_length=100, blank=True, null=True)
+
     class Meta:
         db_table = "youtube_video"
+
+    def __str__(self):
+        return self.youtube_video_original_title
 
 
 class YoutubeVideoSubCategory(core_models.TimeStampedModel):
@@ -92,3 +97,6 @@ class YoutubeVideoSubCategory(core_models.TimeStampedModel):
 
     class Meta:
         db_table = "youtube_video_sub_category"
+
+    def __str__(self):
+        return self.pk
