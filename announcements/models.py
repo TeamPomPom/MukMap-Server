@@ -8,3 +8,6 @@ class TermsOfUses(core_models.TimeStampedModel):
 
     def __str__(self):
         return "Announcement updated at : " + self.updated
+
+    class Meta:
+        db_table = "terms_of_use"
