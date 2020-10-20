@@ -13,3 +13,6 @@ class Restaurants(core_models.TimeStampedModel):
 
     class Meta:
         db_table = "restuarant"
+
+    def __str__(self):
+        return self.name

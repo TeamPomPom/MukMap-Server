@@ -27,6 +27,9 @@ class UserFavoriteVideo(core_models.TimeStampedModel):
     class Meta:
         db_table = "user_favorite"
 
+    def __str__(self):
+        return self.pk
+
 
 class UserSubscribeChannel(core_models.TimeStampedModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -34,6 +37,9 @@ class UserSubscribeChannel(core_models.TimeStampedModel):
 
     class Meta:
         db_table = "user_subscribe_channel"
+
+    def __str__(self):
+        return self.pk
 
 
 class YoutubeChannel(core_models.TimeStampedModel):
@@ -64,7 +70,7 @@ class YoutubeChannel(core_models.TimeStampedModel):
     )
 
     def __str__(self):
-        return "Youtube channel : ".join(self.channel_name)
+        return self.channel_name
 
     class Meta:
         db_table = "youtube_channel"
