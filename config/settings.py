@@ -104,6 +104,7 @@ DATABASES = {
             "autocommit": True,
             "charset": "utf8",
             "use_unicode": True,
+            "use_pure": True,
         },
     }
 }
