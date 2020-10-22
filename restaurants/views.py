@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Restaurants
 from .serializers import RestaurantsSerializer
+from channels.permissions import IsApprovedChannel
 
 
 class RestaurantViewSet(ModelViewSet):
@@ -22,7 +23,7 @@ class RestaurantViewSet(ModelViewSet):
             permission_classes = [permissions.AllowAny]
         # If owner of youtube channel want to create restaurants data when create video data, owner should be login status
         elif self.action == "create":
-            permission_classes = [permissions.IsAuthenticated]
+            permission_classes = [IsApprovedChannel]
         # If case for update / delete ... is able only admin
         # If owner want to modify this, they have to send proposals of modifications to admin users
         else:
