@@ -51,7 +51,7 @@ PROJECT_APPS = [
     "restaurants.apps.RestaurantsConfig",
     "users.apps.UsersConfig",
     "channels.apps.ChannelsConfig",
-    "userstatistics.apps.UserstatisticsConfig",
+    "logs.apps.LogsConfig",
     "videos.apps.VideosConfig",
 ]
 
