@@ -50,6 +50,7 @@ PROJECT_APPS = [
     "foods.apps.FoodsConfig",
     "restaurants.apps.RestaurantsConfig",
     "users.apps.UsersConfig",
+    "channels.apps.ChannelsConfig",
     "userstatistics.apps.UserstatisticsConfig",
     "videos.apps.VideosConfig",
 ]
