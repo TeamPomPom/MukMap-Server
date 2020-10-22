@@ -21,6 +21,7 @@ django-storages = "*"
 sentry-sdk = "*"
 django-countries = "*"
 isodate = "*"
+haversine = "*"
 
 [requires]
 python_version = "3.8"

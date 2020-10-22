@@ -55,7 +55,7 @@ PROJECT_APPS = [
     "videos.apps.VideosConfig",
 ]
 
-THIRD_PARTY_APPS = ["django_countries", "rest_framework"]
+THIRD_PARTY_APPS = ["django_countries", "rest_framework", "haversine"]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
