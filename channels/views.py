@@ -13,7 +13,6 @@ class YoutubeChannelViewSet(ModelViewSet):
     serializer_class = YoutubeChannelSerializer
 
     def get_permissions(self):
-        print(self.action)
         if self.action == "list" or self.action == "retrieve":
             permission_classes = [permissions.AllowAny]
         # If owner of youtube channel want to sign up our service, owner should be login status

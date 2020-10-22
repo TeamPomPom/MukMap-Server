@@ -31,7 +31,6 @@ class RestaurantViewSet(ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def search(self, request):
-        print("haha")
         lat = request.GET.get("lat", None)
         lng = request.GET.get("lng", None)
 
