@@ -9,6 +9,8 @@ from .models import User
 from .serializers import UserSerializer
 from videos.models import YoutubeVideo
 from videos.serializers import YoutubueVideoSerializer
+from channels.models import YoutubeChannel
+from channels.serializers import YoutubeChannelSerializer
 
 
 class UserViewSet(ModelViewSet):
@@ -70,5 +72,26 @@ class UserViewSet(ModelViewSet):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True)
+    def subscribes(self, request, id):
+        user = self.get_object()
+        serializer = YoutubeChannelSerializer(user.subscribe.all(), many=True)
+        return Response(serializer.data)
+
+    @subscribes.mapping.put
+    def toggle_subscribes(self, request, id):
+        id = request.data.get("id", None)
+        user = self.get_object()
+        if id is not None:
+            try:
+                youtube_channel = YoutubeChannel.objects.get(id=id)
+                if youtube_channel in user.subscribe.all():
+                    user.subscribe.remove(youtube_channel)
+                else:
+                    user.subscribe.add(youtube_channel)
+                return Response()
+            except YoutubeChannel.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
