@@ -20,4 +20,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/channels/", include("channels.urls")),
     path("api/v1/restaurants/", include("restaurants.urls")),
+    path("api/v1/videos/", include("videos.urls")),
 ]
