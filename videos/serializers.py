@@ -14,3 +14,9 @@ class RelatedYoutubeVideoSerializer(serializers.ModelSerializer):
             "main_food_category",
             "sub_food_category",
         )
+
+
+class YoutubueVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YoutubeVideo
+        fields = "__all__"
