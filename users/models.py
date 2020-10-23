@@ -16,7 +16,7 @@ class User(AbstractUser, core_models.TimeStampedModel):
     apple_id = models.CharField(max_length=150, null=True, blank=True)
 
     def __str__(self):
-        return self.email
+        return self.username
 
     class Meta:
         db_table = "user"
