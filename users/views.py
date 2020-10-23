@@ -7,6 +7,8 @@ from rest_framework import status
 from .permissions import IsOwner
 from .models import User
 from .serializers import UserSerializer
+from videos.models import YoutubeVideo
+from videos.serializers import YoutubueVideoSerializer
 
 
 class UserViewSet(ModelViewSet):
@@ -45,3 +47,28 @@ class UserViewSet(ModelViewSet):
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True)
+    def favorites(self, request, id):
+        user = self.get_object()
+        serializer = YoutubueVideoSerializer(user.favorite.all(), many=True)
+        return Response(serializer.data)
+
+    @favorites.mapping.put
+    def toggle_favorites(self, request, id):
+        id = request.data.get("id", None)
+        user = self.get_object()
+        if id is not None:
+            try:
+                youtube_video = YoutubeVideo.objects.get(id=id)
+                if youtube_video in user.favorite.all():
+                    user.favorite.remove(youtube_video)
+                else:
+                    user.favorite.add(youtube_video)
+                return Response()
+            except YoutubeVideo.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
