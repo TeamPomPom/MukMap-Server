@@ -6,4 +6,4 @@ router = DefaultRouter()
 router.register("", views.YoutubeChannelViewSet, basename="channels")
 urlpatterns = router.urls
 
-app_name = "users"
+app_name = "channels"
