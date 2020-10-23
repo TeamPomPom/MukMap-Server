@@ -5,7 +5,7 @@ from .models import User, UserFavoriteVideo, UserSubscribeChannel
 class RelatedUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        field = ("id", "favorite", "subscribe", "email")
+        fields = ("id", "favorite", "subscribe", "email")
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,13 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        field = (
-            "id",
-            "email",
-            "google_id",
-            "facebook_id",
-            "apple_id",
-        )
+        fields = ("id", "email", "google_id", "facebook_id", "apple_id", "password")
 
     def create(self, validated_data):
         google_id = validated_data.get("google_id")
