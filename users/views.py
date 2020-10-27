@@ -43,26 +43,26 @@ class UserViewSet(ModelViewSet):
             user = authenticate(username=username, password=password)
             if user is not None:
                 encoded_jwt = jwt.encode(
-                    {"id": user.id}, settings.SECRET_KEY, algorithm="HS256"
+                    {"pk": user.pk}, settings.SECRET_KEY, algorithm="HS256"
                 )
-                return Response(data={"token": encoded_jwt, "id": user.id})
+                return Response(data={"token": encoded_jwt, "pk": user.pk})
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True)
-    def favorites(self, request, id):
+    def favorites(self, request, pk):
         user = self.get_object()
         serializer = YoutubueVideoSerializer(user.favorite.all(), many=True)
         return Response(serializer.data)
 
     @favorites.mapping.put
-    def toggle_favorites(self, request, id):
-        id = request.data.get("id", None)
+    def toggle_favorites(self, request, pk):
+        pk = request.data.get("pk", None)
         user = self.get_object()
-        if id is not None:
+        if pk is not None:
             try:
-                youtube_video = YoutubeVideo.objects.get(id=id)
+                youtube_video = YoutubeVideo.objects.get(pk=pk)
                 if youtube_video in user.favorite.all():
                     user.favorite.remove(youtube_video)
                 else:
@@ -74,18 +74,18 @@ class UserViewSet(ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True)
-    def subscribes(self, request, id):
+    def subscribes(self, request, pk):
         user = self.get_object()
         serializer = YoutubeChannelSerializer(user.subscribe.all(), many=True)
         return Response(serializer.data)
 
     @subscribes.mapping.put
-    def toggle_subscribes(self, request, id):
-        id = request.data.get("id", None)
+    def toggle_subscribes(self, request, pk):
+        pk = request.data.get("pk", None)
         user = self.get_object()
-        if id is not None:
+        if pk is not None:
             try:
-                youtube_channel = YoutubeChannel.objects.get(id=id)
+                youtube_channel = YoutubeChannel.objects.get(pk=pk)
                 if youtube_channel in user.subscribe.all():
                     user.subscribe.remove(youtube_channel)
                 else:
