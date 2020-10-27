@@ -30,7 +30,7 @@ class UserFavoriteVideo(core_models.TimeStampedModel):
         db_table = "user_favorite"
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class UserSubscribeChannel(core_models.TimeStampedModel):
@@ -43,4 +43,4 @@ class UserSubscribeChannel(core_models.TimeStampedModel):
         db_table = "user_subscribe_channel"
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)

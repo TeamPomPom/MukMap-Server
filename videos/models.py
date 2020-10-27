@@ -96,4 +96,4 @@ class YoutubeVideoSubCategory(core_models.TimeStampedModel):
         db_table = "youtube_video_sub_category"
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
