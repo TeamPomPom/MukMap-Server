@@ -3,7 +3,7 @@ from core import models as core_models
 
 
 class DeviceClickLog(core_models.TimeStampedModel):
-    user = models.ForeignKey(
+    device = models.ForeignKey(
         "devices.Device",
         related_name="device_click_logs",
         on_delete=models.CASCADE,
