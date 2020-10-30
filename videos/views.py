@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 from haversine import haversine
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
@@ -8,6 +9,7 @@ from channels.permissions import IsApprovedChannel
 from restaurants.models import Restaurants
 from .permissions import IsOwnerOfVideo
 from .models import YoutubeVideo
+from foods.models import MainFoodCategory, SubFoodCategory
 from .serializers import YoutubueVideoSerializer
 
 
@@ -31,22 +33,47 @@ class YoutubeViedoeViewSet(ModelViewSet):
     def search(self, request):
         lat = request.GET.get("lat", None)
         lng = request.GET.get("lng", None)
+        query = request.GET.get("query", None)
 
-        if not lat or not lng:
+        if (not lat or not lng) and not query:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        if query:
+            region_query = query
+            food_query = query
+            split_query = query.split()
+            if len(split_query) > 1:
+                max_index = max(
+                    range(len(split_query)),
+                    key=lambda i: Restaurants.objects.filter(
+                        Q(name__contains=split_query[i])
+                    ).count(),
+                )
+                region_query = split_query[max_index]
+                food_query = query.replace(region_query, "")
 
-        lat = float(lat)
-        lng = float(lng)
-        search_pos = (lat, lng)
+            main_food_category = MainFoodCategory.objects.filter(
+                Q(name__contains=food_query)
+            )
+            sub_food_category = SubFoodCategory.objects.filter(
+                Q(name__contains=food_query)
+            )
 
-        squar_restaurants = Restaurants.objects.filter(
-            lat__range=(lat - 0.01, lat + 0.01), lng__range=(lng - 0.015, lng + 0.015)
-        )
-        circle_restaurants = [
-            restuarant
-            for restuarant in squar_restaurants
-            if haversine(search_pos, (restuarant.lat, restuarant.lng)) <= 2
-        ]
-        youtube_videos = YoutubeVideo.objects.filter(restaurant__in=circle_restaurants)
-        serializer = self.get_serializer(youtube_videos, many=True)
-        return Response(serializer.data)
+        if lat and lng:
+            lat = float(lat)
+            lng = float(lng)
+            search_pos = (lat, lng)
+
+            squar_restaurants = Restaurants.objects.filter(
+                lat__range=(lat - 0.01, lat + 0.01),
+                lng__range=(lng - 0.015, lng + 0.015),
+            )
+            circle_restaurants = [
+                restuarant
+                for restuarant in squar_restaurants
+                if haversine(search_pos, (restuarant.lat, restuarant.lng)) <= 2
+            ]
+            youtube_videos = YoutubeVideo.objects.filter(
+                restaurant__in=circle_restaurants
+            )
+            serializer = self.get_serializer(youtube_videos, many=True)
+            return Response(serializer.data)
