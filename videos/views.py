@@ -5,12 +5,12 @@ from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from channels.permissions import IsApprovedChannel
-from restaurants.models import Restaurants
 from .permissions import IsOwnerOfVideo
 from .models import YoutubeVideo
-from foods.models import MainFoodCategory, SubFoodCategory
 from .serializers import YoutubueVideoSerializer
+from channels.permissions import IsApprovedChannel
+from restaurants.models import Restaurants
+from foods.models import MainFoodCategory, SubFoodCategory
 
 
 class YoutubeViedoeViewSet(ModelViewSet):
