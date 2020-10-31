@@ -119,12 +119,19 @@ class YoutubeViedoeViewSet(ModelViewSet):
         channels = YoutubeChannel.objects.filter(
             Q(channel_name__icontains=channel_query)
         )
-        youtube_videos = YoutubeVideo.objects.filter(
-            Q(main_food_category__id__in=main_food_category.values_list("id"))
-            | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
-            | Q(restaurant__id__in=restaurants.values_list("id"))
-            | Q(youtube_channel__id__in=channels.values_list("id"))
-        )
+        if channels.exists():
+            youtube_videos = YoutubeVideo.objects.filter(
+                Q(main_food_category__id__in=main_food_category.values_list("id"))
+                | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
+                | Q(restaurant__id__in=restaurants.values_list("id"))
+                & Q(youtube_channel__id__in=channels.values_list("id"))
+            ).distinct()
+        else:
+            youtube_videos = YoutubeVideo.objects.filter(
+                Q(main_food_category__id__in=main_food_category.values_list("id"))
+                | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
+                | Q(restaurant__id__in=restaurants.values_list("id"))
+            ).distinct()
         video_serializer = self.get_serializer(youtube_videos, many=True)
         channel = channels.first()
         channel_serializer = YoutubeChannelSerializer(channel)
