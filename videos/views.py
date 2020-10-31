@@ -45,17 +45,17 @@ class YoutubeViedoeViewSet(ModelViewSet):
                 max_index = max(
                     range(len(split_query)),
                     key=lambda i: Restaurants.objects.filter(
-                        Q(name__contains=split_query[i])
+                        Q(name__icontains=split_query[i])
                     ).count(),
                 )
                 region_query = split_query[max_index]
                 food_query = query.replace(region_query, "")
 
             main_food_category = MainFoodCategory.objects.filter(
-                Q(name__contains=food_query)
+                Q(name__icontains=food_query)
             )
             sub_food_category = SubFoodCategory.objects.filter(
-                Q(name__contains=food_query)
+                Q(name__icontains=food_query)
             )
 
         if lat and lng:
