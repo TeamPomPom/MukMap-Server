@@ -74,13 +74,15 @@ class YoutubeViedoeViewSet(ModelViewSet):
         split_query = query.split()
         if len(split_query) > 1:
             # TODO : Multiple region / channel search (ex_ 서울 강남 치킨, 츄릅켠 사먹사전)
-            count_restaurant_query_result = map(
-                lambda i: Restaurants.objects.filter(
-                    Q(full_address__icontains=split_query[i])
-                    | Q(province__icontains=split_query[i])
-                    | Q(district__icontains=split_query[i])
-                ).count(),
-                split_query,
+            count_restaurant_query_result = list(
+                map(
+                    lambda query: Restaurants.objects.filter(
+                        Q(full_address__icontains=query)
+                        | Q(province__icontains=query)
+                        | Q(district__icontains=query)
+                    ).count(),
+                    split_query,
+                )
             )
             max_restaurant_count_value = max(count_restaurant_query_result)
             if max_restaurant_count_value != 0:
@@ -89,11 +91,13 @@ class YoutubeViedoeViewSet(ModelViewSet):
                 )
                 region_query = split_query[max_index]
                 query = query.replace(region_query, "")
-            count_channel_query_result = map(
-                lambda i: YoutubeChannel.objects.filter(
-                    Q(channel_name__icontains=split_query[i])
-                ).count(),
-                split_query,
+            count_channel_query_result = list(
+                map(
+                    lambda query: YoutubeChannel.objects.filter(
+                        Q(channel_name__icontains=query)
+                    ).count(),
+                    split_query,
+                )
             )
             max_channel_count_value = max(count_channel_query_result)
             if max_channel_count_value != 0:
