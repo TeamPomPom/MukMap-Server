@@ -4,8 +4,8 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Device
-from logs.models import DeviceSearchLog, DeviceClickLog
 from .serializers import DeviceSerializer
+from logs.models import DeviceSearchLog, DeviceClickLog
 from logs.serializers import DeviceClickLogSerializer, DeviceSearchLogSerializer
 from videos.models import YoutubeVideo
 
