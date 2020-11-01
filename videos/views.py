@@ -14,6 +14,8 @@ from .permissions import IsOwnerOfVideo
 from .models import YoutubeVideo
 from .serializers import YoutubueVideoSerializer
 from .renderers import QuerySearchResultRenderer
+from devices.models import Device
+from logs.models import DeviceSearchLog
 from channels.models import YoutubeChannel
 from channels.permissions import IsApprovedChannel
 from channels.serializers import YoutubeChannelSerializer
@@ -68,10 +70,11 @@ class YoutubeViedoeViewSet(ModelViewSet):
     @renderer_classes(QuerySearchResultRenderer)
     def query_search(self, request):
         query = request.GET.get("query", None)
+        device_token = request.GET.get("device_token", None)
         page = request.GET.get("page", 1)
         page_size = settings.DEFAULT_PAGE_SIZE
 
-        if not query:
+        if not query or not device_token:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         region_query = []
         food_query = []
@@ -103,6 +106,21 @@ class YoutubeViedoeViewSet(ModelViewSet):
                 channel_query.append(query)
             else:
                 food_query.append(query)
+        try:
+            device = Device.objects.get(device_token=device_token)
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        device_search_log = DeviceSearchLog.objects.create(
+            search_keyword=query, device=device
+        )
+        if food_query:
+            device_search_log.food_keyword = str(food_query)
+        if region_query:
+            device_search_log.region_keyword = str(region_query)
+        if channel_query:
+            device_search_log.channel_keyword = str(channel_query)
+        device_search_log.save()
+
         try:
             main_food_category = MainFoodCategory.objects.filter(
                 functools.reduce(
