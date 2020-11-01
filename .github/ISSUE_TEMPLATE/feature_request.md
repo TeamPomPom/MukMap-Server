@@ -7,14 +7,21 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+> 작업 도중에 학습 한 내용 / 공유 할만한 내용들을 공유 하는것을 원칙으로 진행합니다. 
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+## 해결하고자 하는 주제에 대해 설명 해 주세요. 
+주제를 자세히 적어 주시면 이해하는데 큰 도움이 됩니다. 
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+## 위 주제를 해결할 수 있는 방안으로는 어떤 것이 있나요?
+해결 방안에 대해 자세히 설명 해 주세요. 
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+## 어떤 이슈와 연관성이 있나요?
+연관성이 있는 이슈 번호를 `#num`의 형식으로 적어 주세요.
+
+## 다음 작업들이 진행되어야 합니다.
+앞으로 진행 되어야 할 작업 들을 설명 해 주세요.
+- [ ] 체크박스 형식으로 설명 해 주셔도 좋고
+- 리스트 형식으로 설명 해 주셔도 좋습니다.
+
+## 참고 사항
+참고 할만한 문서나, 서비스의 링크를 적어 주세요.
