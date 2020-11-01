@@ -22,6 +22,7 @@ sentry-sdk = "*"
 django-countries = "*"
 isodate = "*"
 haversine = "*"
+drf-yasg = "*"
 
 [requires]
 python_version = "3.8"
