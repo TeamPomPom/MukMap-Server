@@ -1,8 +1,5 @@
 from django.db import models
 from core import models as core_models
-from users.models import YoutubeChannel
-from foods.models import MainFoodCategory, SubFoodCategory
-from restaurants.models import Restaurants
 
 
 class YoutubeVideo(core_models.TimeStampedModel):
@@ -10,7 +7,7 @@ class YoutubeVideo(core_models.TimeStampedModel):
     youtube_video_id = models.CharField(max_length=100, null=False, blank=False)
 
     youtube_channel = models.ForeignKey(
-        "users.YoutubeChannel",
+        "channels.YoutubeChannel",
         related_name="youtube_videos",
         on_delete=models.PROTECT,
         null=False,
@@ -99,4 +96,4 @@ class YoutubeVideoSubCategory(core_models.TimeStampedModel):
         db_table = "youtube_video_sub_category"
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)

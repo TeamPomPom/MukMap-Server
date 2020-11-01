@@ -7,7 +7,7 @@ class Device(TimeStampedModel):
 
     device_token = models.CharField(max_length=100, null=False)
     user = models.ForeignKey(
-        "users.User", related_name="devices", on_delete=models.CASCADE, null=False
+        "users.User", related_name="devices", on_delete=models.CASCADE, null=True
     )
 
     class Meta:

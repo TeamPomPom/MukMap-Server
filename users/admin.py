@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserFavoriteVideo, UserSubscribeChannel, YoutubeChannel
+from .models import User, UserFavoriteVideo, UserSubscribeChannel
 
 
 @admin.register(User)
@@ -14,9 +14,4 @@ class UserFavoriteVideoAdmin(admin.ModelAdmin):
 
 @admin.register(UserSubscribeChannel)
 class UserSubscribeChannelAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(YoutubeChannel)
-class YoutubeChannelAdmin(admin.ModelAdmin):
     pass

@@ -50,13 +50,14 @@ PROJECT_APPS = [
     "foods.apps.FoodsConfig",
     "restaurants.apps.RestaurantsConfig",
     "users.apps.UsersConfig",
-    "userstatistics.apps.UserstatisticsConfig",
+    "channels.apps.ChannelsConfig",
+    "logs.apps.LogsConfig",
     "videos.apps.VideosConfig",
 ]
 
-THIRD_PARTY_APPS = ["django_countries"]
+THIRD_PARTY_APPS = ["django_countries", "rest_framework", "haversine", "drf_yasg"]
 
-INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -171,3 +172,25 @@ if not DEBUG:
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
     )
+
+DEFAULT_PAGE_SIZE = 30
+
+if DEBUG:
+    REST_FRAMEWORK = {
+        "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+        "PAGE_SIZE": DEFAULT_PAGE_SIZE,
+        "DEFAULT_AUTHENTICATION_CLASSES": [
+            "config.authentication.JWTAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+        ],
+    }
+if not DEBUG:
+    REST_FRAMEWORK = {
+        "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+        "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+        "PAGE_SIZE": DEFAULT_PAGE_SIZE,
+        "DEFAULT_AUTHENTICATION_CLASSES": [
+            "config.authentication.JWTAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+        ],
+    }
