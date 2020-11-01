@@ -2,6 +2,8 @@ import operator
 import functools
 from django.shortcuts import render
 from django.db.models import Q
+from django.conf import settings
+from django.core.paginator import Paginator
 from haversine import haversine
 from rest_framework import permissions
 from rest_framework import status
@@ -66,6 +68,8 @@ class YoutubeViedoeViewSet(ModelViewSet):
     @renderer_classes(QuerySearchResultRenderer)
     def query_search(self, request):
         query = request.GET.get("query", None)
+        page = request.GET.get("page", 1)
+        page_size = settings.DEFAULT_PAGE_SIZE
 
         if not query:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -164,6 +168,8 @@ class YoutubeViedoeViewSet(ModelViewSet):
                 & Q(restaurant__id__in=restaurant.values_list("id"))
                 & Q(youtube_channel__id__in=channel.values_list("id"))
             ).distinct()
+        paginator = Paginator(youtube_videos, page_size)
+        youtube_videos = paginator.get_page(page)
         video_serializer = self.get_serializer(youtube_videos, many=True)
         if channel_query:
             channel = channel.first()
