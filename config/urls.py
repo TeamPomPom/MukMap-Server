@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
+from django.conf import settings
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -40,17 +41,27 @@ urlpatterns = [
     path("api/v1/users/", include("users.urls")),
     path("api/v1/videos/", include("videos.urls")),
     path("api/v1/devices/", include("devices.urls")),
-    url(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-    url(
-        r"^swagger/$",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    url(
-        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
-    ),
 ]
+
+if not settings.SERVICE:
+    urlpatterns.append(
+        url(
+            r"^swagger(?P<format>\.json|\.yaml)$",
+            schema_view.without_ui(cache_timeout=0),
+            name="schema-json",
+        )
+    )
+    urlpatterns.append(
+        url(
+            r"^swagger/$",
+            schema_view.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        )
+    )
+    urlpatterns.append(
+        url(
+            r"^redoc/$",
+            schema_view.with_ui("redoc", cache_timeout=0),
+            name="schema-redoc",
+        )
+    )
