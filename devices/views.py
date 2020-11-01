@@ -19,6 +19,7 @@ class DeviceViewSet(ModelViewSet):
             self.action == "create"
             or self.action == "update"
             or self.action == "partial_update"
+            or self.action == "write_click_log"
         ):
             permission_classes = [AllowAny]
         else:
