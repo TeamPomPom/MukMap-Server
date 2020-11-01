@@ -6,6 +6,7 @@ from .models import Device
 from logs.models import DeviceSearchLog, DeviceClickLog
 from .serializers import DeviceSerializer
 from logs.serializers import DeviceClickLogSerializer, DeviceSearchLogSerializer
+from videos.models import YoutubeVideo
 
 
 class DeviceViewSet(ModelViewSet):
@@ -38,3 +39,20 @@ class DeviceViewSet(ModelViewSet):
         click_log = DeviceClickLog.objects.filter(device=device)
         serializer = DeviceClickLogSerializer(click_log.data, read_only=True, many=True)
         return Response(serializer.data)
+
+    @click.mapping.post
+    def write_click_log(self, request, pk):
+        youtube_video_id = request.data.get("video_id", None)
+        device = self.get_object()
+        if youtube_video_id and device:
+            try:
+                youtube_video = YoutubeVideo.objects.get(pk=youtube_video_id)
+                device_search_log = DeviceClickLog(
+                    device=device, youtube_video=youtube_video
+                )
+                device_search_log.save()
+                return Response()
+            except YoutubeVideo.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
