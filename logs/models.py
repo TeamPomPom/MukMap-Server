@@ -29,6 +29,9 @@ class DeviceSearchLog(core_models.TimeStampedModel):
         related_name="device_search_logs",
         on_delete=models.CASCADE,
     )
+    food_keyword = models.TextField(blank=True, null=True)
+    region_keyword = models.TextField(blank=True, null=True)
+    channel_keyword = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = "device_search_log"
