@@ -68,75 +68,112 @@ class YoutubeViedoeViewSet(ModelViewSet):
 
         if not query:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        region_query = [query]
-        food_query = [query]
-        channel_query = query
+        region_query = []
+        food_query = []
+        channel_query = []
         split_query = query.split()
-        if len(split_query) > 1:
-            # TODO : Multiple region / channel search (ex_ 서울 강남 치킨, 츄릅켠 사먹사전)
-            count_restaurant_query_result = list(
-                map(
-                    lambda query: Restaurants.objects.filter(
-                        Q(full_address__icontains=query)
-                        | Q(province__icontains=query)
-                        | Q(district__icontains=query)
-                    ).count(),
-                    split_query,
+        for query in split_query:
+            count_list = []
+            count_list.append(
+                Restaurants.objects.filter(
+                    Q(full_address__icontains=query)
+                    | Q(province__icontains=query)
+                    | Q(district__icontains=query)
+                ).count()
+            )
+            count_list.append(
+                YoutubeChannel.objects.filter(Q(channel_name__icontains=query)).count()
+            )
+            count_list.append(
+                (
+                    MainFoodCategory.objects.filter(Q(name__icontains=query)).count()
+                    + SubFoodCategory.objects.filter(Q(name__icontains=query)).count()
                 )
             )
-            max_restaurant_count_value = max(count_restaurant_query_result)
-            if max_restaurant_count_value != 0:
-                max_index = count_restaurant_query_result.index(
-                    max_restaurant_count_value
-                )
-                region_query = split_query[max_index]
-                query = query.replace(region_query, "")
-            count_channel_query_result = list(
-                map(
-                    lambda query: YoutubeChannel.objects.filter(
-                        Q(channel_name__icontains=query)
-                    ).count(),
-                    split_query,
+            print(count_list)
+            max_val = count_list.index(max(count_list))
+            if max_val == 0:
+                region_query.append(query)
+            elif max_val == 1:
+                channel_query.append(query)
+            else:
+                food_query.append(query)
+        try:
+            main_food_category = MainFoodCategory.objects.filter(
+                functools.reduce(
+                    operator.or_, (Q(name__icontains=x) for x in food_query)
                 )
             )
-            max_channel_count_value = max(count_channel_query_result)
-            if max_channel_count_value != 0:
-                max_index = count_channel_query_result.index(max_channel_count_value)
-                channel_query = split_query[max_index]
-                query = query.replace(channel_query, "")
-        main_food_category = MainFoodCategory.objects.filter(
-            functools.reduce(operator.or_, (Q(name__icontains=x) for x in food_query))
-        )
-        sub_food_category = SubFoodCategory.objects.filter(
-            functools.reduce(operator.or_, (Q(name__icontains=x) for x in food_query))
-        )
-        restaurants = Restaurants.objects.filter(
-            functools.reduce(operator.or_, (Q(name__icontains=x) for x in food_query))
-            | Q(full_address__icontains=region_query)
-            | Q(province__icontains=region_query)
-            | Q(district__icontains=region_query)
-        )
-        channels = YoutubeChannel.objects.filter(
-            Q(channel_name__icontains=channel_query)
-        )
-        if channels.exists():
-            youtube_videos = YoutubeVideo.objects.filter(
-                Q(main_food_category__id__in=main_food_category.values_list("id"))
-                | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
-                | Q(restaurant__id__in=restaurants.values_list("id"))
-                & Q(youtube_channel__id__in=channels.values_list("id"))
-            ).distinct()
+        except Exception:
+            main_food_category = MainFoodCategory.objects.all()
+        try:
+            sub_food_category = SubFoodCategory.objects.filter(
+                functools.reduce(
+                    operator.or_, (Q(name__icontains=x) for x in food_query)
+                )
+            )
+        except Exception:
+            sub_food_category = SubFoodCategory.objects.all()
+        try:
+            restaurant = Restaurants.objects.filter(
+                functools.reduce(
+                    operator.or_, (Q(name__icontains=x) for x in region_query)
+                )
+                | functools.reduce(
+                    operator.or_, (Q(full_address__icontains=x) for x in region_query)
+                )
+                | functools.reduce(
+                    operator.or_, (Q(province__icontains=x) for x in region_query)
+                )
+                | functools.reduce(
+                    operator.or_, (Q(district__icontains=x) for x in region_query)
+                )
+            )
+        except Exception:
+            restaurant = Restaurants.objects.all()
+        try:
+            channel = YoutubeChannel.objects.filter(
+                functools.reduce(
+                    operator.or_, (Q(channel_name__icontains=x) for x in channel_query)
+                )
+            )
+        except Exception:
+            channel = YoutubeChannel.objects.all()
+
+        if len(split_query) == 1:
+            if food_query:
+                youtube_videos = YoutubeVideo.objects.filter(
+                    Q(main_food_category__id__in=main_food_category.values_list("id"))
+                    | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
+                ).distinct()
+            elif region_query:
+                youtube_videos = YoutubeVideo.objects.filter(
+                    Q(restaurant__id__in=restaurant.values_list("id"))
+                ).distinct()
+            else:
+                youtube_videos = YoutubeVideo.objects.filter(
+                    Q(youtube_channel__id__in=channel.values_list("id"))
+                ).distinct()
         else:
             youtube_videos = YoutubeVideo.objects.filter(
-                Q(main_food_category__id__in=main_food_category.values_list("id"))
-                | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
-                | Q(restaurant__id__in=restaurants.values_list("id"))
+                (
+                    Q(main_food_category__id__in=main_food_category.values_list("id"))
+                    | Q(sub_food_category__id__in=sub_food_category.values_list("id"))
+                )
+                & Q(restaurant__id__in=restaurant.values_list("id"))
+                & Q(youtube_channel__id__in=channel.values_list("id"))
             ).distinct()
         video_serializer = self.get_serializer(youtube_videos, many=True)
-        channel = channels.first()
-        channel_serializer = YoutubeChannelSerializer(channel)
-        response_dict = {
-            "videos": video_serializer.data,
-            "channel": channel_serializer.data,
-        }
+        if channel_query:
+            channel = channel.first()
+            channel_serializer = YoutubeChannelSerializer(channel)
+            response_dict = {
+                "videos": video_serializer.data,
+                "channel": channel_serializer.data,
+            }
+        else:
+            response_dict = {
+                "videos": video_serializer.data,
+                "channel": {},
+            }
         return Response(response_dict)
