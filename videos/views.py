@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from haversine import haversine
 from rest_framework import permissions
+from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action, renderer_classes
