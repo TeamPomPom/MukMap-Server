@@ -22,7 +22,7 @@ class UserViewSet(ModelViewSet):
         permission_classes = []
         if self.action == "list":
             permission_classes = [IsAdminUser]
-        elif self.action == "create" or self.action == "retrieve":
+        elif self.action == "create" or self.action == "login":
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsOwner]
