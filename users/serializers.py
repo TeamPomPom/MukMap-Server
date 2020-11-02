@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "google_id", "facebook_id", "apple_id", "password")
+        fields = ("id", "username", "google_id", "facebook_id", "apple_id", "password")
 
     def create(self, validated_data):
         google_id = validated_data.get("google_id")
