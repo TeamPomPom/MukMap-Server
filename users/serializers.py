@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         if google_id or facebook_id or apple_id:
             user = super().create(validated_data)
-            user.set_password(password)
+            user.set_unusable_password()
             user.save()
             return user
         else:
