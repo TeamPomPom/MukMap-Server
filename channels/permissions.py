@@ -10,7 +10,16 @@ class IsOwner(BasePermission):
 
 
 class IsApprovedChannel(BasePermission):
-    def has_object_permission(self, request, view, restuarant):
+    def has_permission(self, request, view):
+        if not request.user:
+            return False
+        try:
+            channel = YoutubeChannel.objects.get(user=request.user)
+            return channel.status == YoutubeChannel.APPROVED
+        except YoutubeChannel.DoesNotExist:
+            return False
+
+    def has_object_permission(self, request, view, channel):
         if not request.user:
             return False
         try:
