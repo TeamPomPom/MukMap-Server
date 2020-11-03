@@ -2,12 +2,6 @@ from rest_framework import serializers
 from .models import User, UserFavoriteVideo, UserSubscribeChannel
 
 
-class RelatedUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("id", "favorite", "subscribe", "email")
-
-
 class UserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True)
