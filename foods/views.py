@@ -28,5 +28,4 @@ class SubFoodViewSet(ModelViewSet):
             permission_classes = [IsApprovedChannel]
         else:
             permission_classes = [IsAdminUser]
-        print(permission_classes)
         return [permission() for permission in permission_classes]

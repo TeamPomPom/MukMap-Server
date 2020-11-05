@@ -98,7 +98,7 @@ class YoutubeViedoeViewSet(ModelViewSet):
                     + SubFoodCategory.objects.filter(Q(name__icontains=query)).count()
                 )
             )
-            print(count_list)
+
             max_val = count_list.index(max(count_list))
             if max_val == 0:
                 region_query.append(query)
