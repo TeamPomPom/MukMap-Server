@@ -130,7 +130,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "users.User"
 
-AUTHENTICATION_BACKENDS = "config.auth_backend.SNSAuthBackend"
+AUTHENTICATION_BACKENDS = (
+    "config.auth_backend.SNSAuthBackend",
+    "config.auth_backend.UserNameAdminBackend",
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
