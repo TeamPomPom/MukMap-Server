@@ -1,7 +1,16 @@
 from django.db import models
 
 
-class TimeStampedModel(models.Model):
+class SoftDeletionModel(models.Model):
+    class Meta:
+        abstract = True
+
+    def delete(self):
+        self.deleted_at = timezone.now()
+        self.save()
+
+
+class TimeStampedModel(SoftDeletionModel):
 
     """ Time Stamped Model """
 
