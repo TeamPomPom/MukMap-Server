@@ -6,7 +6,7 @@ class SoftDeletionModel(models.Model):
         abstract = True
 
     def delete(self):
-        self.deleted_at = timezone.now()
+        self.deleted = timezone.now()
         self.save()
 
 
