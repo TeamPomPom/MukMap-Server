@@ -1,6 +1,7 @@
 from django.db.models import Q, Count, Sum
 from rest_framework import serializers
 from .models import YoutubeChannel
+from .validates import datetime_validate
 from restaurants.models import Restaurants
 from restaurants.validates import isProperProvince, convertProvince
 
@@ -37,11 +38,11 @@ class YoutubeChannelDetailSerializer(serializers.ModelSerializer):
         video_query_set = channel.youtube_videos.values_list("restaurant")
         if start_date:
             video_query_set = video_query_set.filter(
-                youtube_video_published_at__gt=start_date
+                youtube_video_published_at__gte=datetime_validate(start_date)
             )
         if end_date:
             video_query_set = video_query_set.filter(
-                Q(youtube_video_published_at__lte=end_date)
+                Q(youtube_video_published_at__lte=datetime_validate(end_date))
             )
         query_set = Restaurants.objects.filter(Q(id__in=video_query_set))
         province_stats = (
