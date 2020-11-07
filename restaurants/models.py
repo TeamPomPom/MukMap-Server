@@ -10,6 +10,7 @@ class Restaurants(core_models.TimeStampedModel):
     full_address = models.CharField(max_length=500, blank=True)
     province = models.CharField(max_length=20, blank=True)
     district = models.CharField(max_length=100)
+    old_district = models.CharField(max_length=50, blank=True)
 
     class Meta:
         db_table = "restuarant"
