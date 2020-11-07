@@ -1,9 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
-
-# For permission set
 from rest_framework import permissions
 from .models import YoutubeChannel
-from .serializers import YoutubeChannelSerializer
+from .serializers import YoutubeChannelSerializer, YoutubeChannelDetailSerializer
 from .permissions import IsOwner
 
 
@@ -11,6 +9,11 @@ class YoutubeChannelViewSet(ModelViewSet):
 
     queryset = YoutubeChannel.objects.all()
     serializer_class = YoutubeChannelSerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return YoutubeChannelDetailSerializer
+        return YoutubeChannelSerializer
 
     def get_permissions(self):
         if self.action == "list" or self.action == "retrieve":
