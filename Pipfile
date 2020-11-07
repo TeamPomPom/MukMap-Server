@@ -23,6 +23,7 @@ django-countries = "*"
 isodate = "*"
 haversine = "*"
 drf-yasg = "*"
+djangorestframework-api-key = "==2.*"
 
 [requires]
 python_version = "3.8"
