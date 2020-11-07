@@ -87,6 +87,7 @@ class YoutubeViedoeViewSet(ModelViewSet):
                     Q(full_address__icontains=query)
                     | Q(province__icontains=query)
                     | Q(district__icontains=query)
+                    | Q(old_district__icontains=query)
                 ).count()
             )
             count_list.append(
@@ -150,6 +151,9 @@ class YoutubeViedoeViewSet(ModelViewSet):
                 )
                 | functools.reduce(
                     operator.or_, (Q(district__icontains=x) for x in region_query)
+                )
+                | functools.reduce(
+                    operator.or_, (Q(old_district__icontains=x) for x in region_query)
                 )
             )
         except Exception:
