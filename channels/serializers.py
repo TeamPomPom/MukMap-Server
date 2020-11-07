@@ -73,30 +73,17 @@ class YoutubeChannelDetailSerializer(serializers.ModelSerializer):
         count_result = sorted(count_result, key=lambda k: -k["count_province"])
 
         ratio_result = []
-        if len(count_result) > top_n:
-            for i in range(0, top_n):
-                ratio_result.append(
-                    {
-                        "province": count_result[i]["province"],
-                        "province_ratio": (
-                            "{:.2f}".format(
-                                count_result[i]["count_province"] * 100 / total_count
-                            )
-                        ),
-                    }
-                )
-        else:
-            for i in range(0, len(count_result)):
-                ratio_result.append(
-                    {
-                        "province": count_result[i]["province"],
-                        "province_ratio": (
-                            "{:.2f}".format(
-                                count_result[i]["count_province"] * 100 / total_count
-                            )
-                        ),
-                    }
-                )
+        for i in range(0, min(top_n, len(count_result))):
+            ratio_result.append(
+                {
+                    "province": count_result[i]["province"],
+                    "province_ratio": (
+                        "{:.2f}".format(
+                            count_result[i]["count_province"] * 100 / total_count
+                        )
+                    ),
+                }
+            )
         return ratio_result
 
     def get_main_food_stat(self, channel):
@@ -142,36 +129,19 @@ class YoutubeChannelDetailSerializer(serializers.ModelSerializer):
         )
 
         ratio_result = []
-        if len(count_result) > top_n:
-            for i in range(0, top_n):
-                ratio_result.append(
-                    {
-                        "main_food_category": MainFoodCategory.objects.get(
-                            id=count_result[i]["main_food_category"]
-                        ).name,
-                        "main_food_category_ratio": (
-                            "{:.2f}".format(
-                                count_result[i]["count_main_food_category"]
-                                * 100
-                                / total_count
-                            )
-                        ),
-                    }
-                )
-        else:
-            for i in range(0, len(count_result)):
-                ratio_result.append(
-                    {
-                        "main_food_category": MainFoodCategory.objects.get(
-                            id=count_result[i]["main_food_category"]
-                        ).name,
-                        "main_food_category_ratio": (
-                            "{:.2f}".format(
-                                count_result[i]["count_main_food_category"]
-                                * 100
-                                / total_count
-                            )
-                        ),
-                    }
-                )
+        for i in range(0, min(top_n, len(count_result))):
+            ratio_result.append(
+                {
+                    "main_food_category": MainFoodCategory.objects.get(
+                        id=count_result[i]["main_food_category"]
+                    ).name,
+                    "main_food_category_ratio": (
+                        "{:.2f}".format(
+                            count_result[i]["count_main_food_category"]
+                            * 100
+                            / total_count
+                        )
+                    ),
+                }
+            )
         return ratio_result
