@@ -31,16 +31,14 @@ class DeviceViewSet(APIKeyModelViewSet):
     def search(self, request, pk):
         device = self.get_object()
         search_log = DeviceSearchLog.objects.filter(device=device)
-        serializer = DeviceSearchLogSerializer(
-            search_log.data, read_only=True, many=True
-        )
+        serializer = DeviceSearchLogSerializer(search_log, read_only=True, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["get"])
     def click(self, request, pk):
         device = self.get_object()
         click_log = DeviceClickLog.objects.filter(device=device)
-        serializer = DeviceClickLogSerializer(click_log.data, read_only=True, many=True)
+        serializer = DeviceClickLogSerializer(click_log, read_only=True, many=True)
         return Response(serializer.data)
 
     @click.mapping.post
