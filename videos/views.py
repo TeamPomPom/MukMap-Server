@@ -29,7 +29,7 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
     serializer_class = YoutubueVideoSerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if (
             self.action == "retrieve"
             or self.action == "geo_search"

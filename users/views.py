@@ -20,7 +20,7 @@ class UserViewSet(APIKeyModelViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if self.action == "list":
             permission_classes += [IsAdminUser]
         elif self.action == "create" or self.action == "login":

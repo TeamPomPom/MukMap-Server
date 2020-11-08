@@ -11,7 +11,7 @@ class MainFoodViewSet(APIKeyModelViewSet):
     serializer_class = MainFoodCategorySerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if self.action == "list":
             permission_classes += [IsApprovedChannel]
         else:
@@ -25,7 +25,7 @@ class SubFoodViewSet(APIKeyModelViewSet):
     serializer_class = SubFoodCategorySerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if self.action == "list" or self.action == "create":
             permission_classes += [IsApprovedChannel]
         else:

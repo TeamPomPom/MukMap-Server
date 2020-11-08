@@ -15,7 +15,7 @@ class DeviceViewSet(APIKeyModelViewSet):
     serializer_class = DeviceSerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if (
             self.action == "create"
             or self.action == "update"
