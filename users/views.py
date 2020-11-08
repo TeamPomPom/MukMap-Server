@@ -1,10 +1,10 @@
 import jwt
 from django.contrib.auth import authenticate
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework import status
+from config.views import APIKeyModelViewSet
 from .permissions import IsOwner
 from .models import User
 from .serializers import UserSerializer
@@ -14,19 +14,19 @@ from channels.models import YoutubeChannel
 from channels.serializers import YoutubeChannelSerializer
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(APIKeyModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        permission_classes = []
+        permission_classes = self.permission_classes
         if self.action == "list":
-            permission_classes = [IsAdminUser]
+            permission_classes += [IsAdminUser]
         elif self.action == "create" or self.action == "login":
-            permission_classes = [AllowAny]
+            permission_classes += [AllowAny]
         else:
-            permission_classes = [IsOwner]
+            permission_classes += [IsOwner]
         return [permission() for permission in permission_classes]
 
     @action(detail=False, methods=["post"])

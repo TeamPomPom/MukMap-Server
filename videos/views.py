@@ -7,9 +7,9 @@ from django.core.paginator import Paginator
 from haversine import haversine
 from rest_framework import permissions
 from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action, renderer_classes
+from config.views import APIKeyModelViewSet
 from .permissions import IsOwnerOfVideo
 from .models import YoutubeVideo
 from .serializers import YoutubueVideoSerializer
@@ -23,24 +23,25 @@ from restaurants.models import Restaurants
 from foods.models import MainFoodCategory, SubFoodCategory
 
 
-class YoutubeViedoeViewSet(ModelViewSet):
+class YoutubeViedoeViewSet(APIKeyModelViewSet):
 
     queryset = YoutubeVideo.objects.all()
     serializer_class = YoutubueVideoSerializer
 
     def get_permissions(self):
+        permission_classes = self.permission_classes
         if (
             self.action == "retrieve"
             or self.action == "geo_search"
             or self.action == "query_search"
         ):
-            permission_classes = [permissions.AllowAny]
+            permission_classes += [permissions.AllowAny]
         elif self.action == "create":
-            permission_classes = [IsApprovedChannel]
+            permission_classes += [IsApprovedChannel]
         elif self.action == "list":
-            permission_classes = [permissions.IsAdminUser]
+            permission_classes += [permissions.IsAdminUser]
         else:
-            permission_classes = [IsOwnerOfVideo]
+            permission_classes += [IsOwnerOfVideo]
         return [permission() for permission in permission_classes]
 
     @action(detail=False, methods=["get"])

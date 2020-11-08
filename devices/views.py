@@ -1,16 +1,16 @@
 from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Device
 from .serializers import DeviceSerializer
+from config.views import APIKeyModelViewSet
 from logs.models import DeviceSearchLog, DeviceClickLog
 from logs.serializers import DeviceClickLogSerializer, DeviceSearchLogSerializer
 from videos.models import YoutubeVideo
 
 
-class DeviceViewSet(ModelViewSet):
+class DeviceViewSet(APIKeyModelViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
@@ -21,9 +21,9 @@ class DeviceViewSet(ModelViewSet):
             or self.action == "partial_update"
             or self.action == "write_click_log"
         ):
-            permission_classes = [AllowAny]
+            permission_classes += [AllowAny]
         else:
-            permission_classes = [IsAdminUser]
+            permission_classes += [IsAdminUser]
         return [permission() for permission in permission_classes]
 
     @action(detail=True, methods=["get"])
