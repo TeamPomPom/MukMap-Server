@@ -20,3 +20,5 @@ class JWTAuthentication(authentication.BaseAuthentication):
             return None
         except jwt.exceptions.DecodeError:
             raise exceptions.AuthenticationFailed(detail="JWT Format Invalid")
+        except jwt.exceptions.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed(detail="JWT Token is expired")

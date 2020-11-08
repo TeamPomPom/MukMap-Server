@@ -1,4 +1,6 @@
 import jwt
+from datetime import timedelta
+from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -48,7 +50,9 @@ class UserViewSet(APIKeyModelViewSet):
             user = authenticate(username=username, apple_id=apple_id)
         if user is not None:
             encoded_jwt = jwt.encode(
-                {"pk": user.pk}, settings.SECRET_KEY, algorithm="HS256"
+                {"pk": user.pk, "exp": timezone.now() + timedelta(days=15)},
+                settings.SECRET_KEY,
+                algorithm="HS256",
             )
             return Response(data={"token": encoded_jwt, "pk": user.pk})
         else:
