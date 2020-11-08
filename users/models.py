@@ -21,10 +21,25 @@ class User(core_models.TimeStampedModel, AbstractUser):
     class Meta:
         db_table = "user"
 
+    def delete(self):
+        channel = self.youtube_channels.all()
+        channel.update(user=None)
+        user_favorite_videos = self.user_favorite_videos.all()
+        user_favorite_videos.delete()
+        user_subscribe_channels = self.user_subscribe_channels.all()
+        user_subscribe_channels.delete()
+        super().delete()
+
 
 class UserFavoriteVideo(core_models.TimeStampedModel):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
-    youtube_video = models.ForeignKey("videos.YoutubeVideo", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        "User", related_name="user_favorite_videos", on_delete=models.CASCADE
+    )
+    youtube_video = models.ForeignKey(
+        "videos.YoutubeVideo",
+        related_name="user_favorite_videos",
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         db_table = "user_favorite"
@@ -34,9 +49,13 @@ class UserFavoriteVideo(core_models.TimeStampedModel):
 
 
 class UserSubscribeChannel(core_models.TimeStampedModel):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        "User", related_name="user_subscribe_channels", on_delete=models.CASCADE
+    )
     youtube_channel = models.ForeignKey(
-        "channels.YoutubeChannel", on_delete=models.CASCADE
+        "channels.YoutubeChannel",
+        related_name="user_subscribe_channels",
+        on_delete=models.CASCADE,
     )
 
     class Meta:
