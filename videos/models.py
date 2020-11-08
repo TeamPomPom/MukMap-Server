@@ -39,7 +39,7 @@ class YoutubeVideo(core_models.TimeStampedModel):
     is_advertising = models.BooleanField(default=False, null=False)
 
     # For localized video title
-    youtube_video_original_title = models.CharField(max_length=300, null=False)
+    youtube_video_original_title = models.CharField(max_length=300, blank=True)
     youtube_video_korean_title = models.CharField(max_length=300, null=True, blank=True)
     youtube_video_english_title = models.CharField(
         max_length=300, null=True, blank=True
@@ -55,7 +55,7 @@ class YoutubeVideo(core_models.TimeStampedModel):
     )
 
     # For localized video description
-    youtube_video_original_desc = models.TextField(max_length=1000)
+    youtube_video_original_desc = models.TextField(max_length=1000, blank=True)
     youtube_video_korean_desc = models.TextField(max_length=1000, null=True, blank=True)
     youtube_video_english_desc = models.TextField(
         max_length=1000, null=True, blank=True
