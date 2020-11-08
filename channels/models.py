@@ -1,5 +1,7 @@
 from django.db import models
 from django_countries.fields import CountryField
+from rest_framework import status
+from rest_framework.response import Response
 from core import models as core_models
 
 
@@ -38,3 +40,9 @@ class YoutubeChannel(core_models.TimeStampedModel):
 
     class Meta:
         db_table = "youtube_channel"
+
+    def delete(self):
+        if len(self.youtube_videos.all()) == 0:
+            user_subscribe_channels = self.user_subscribe_channels.all()
+            user_subscribe_channels.delete()
+            super().delete()

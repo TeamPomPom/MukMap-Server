@@ -1,7 +1,7 @@
 from rest_framework import permissions
 from .models import YoutubeChannel
 from .serializers import YoutubeChannelSerializer, YoutubeChannelDetailSerializer
-from .permissions import IsOwner
+from .permissions import IsOwner, HasEmptyVideo
 from config.views import APIKeyModelViewSet
 
 
@@ -23,6 +23,8 @@ class YoutubeChannelViewSet(APIKeyModelViewSet):
         elif self.action == "create":
             permission_classes += [permissions.IsAuthenticated]
         # If owner of youtube channel want to update / delete ... etc
+        elif self.action == "destroy":
+            permission_classes += [IsOwner, HasEmptyVideo]
         else:
             permission_classes += [IsOwner]
         return [permission() for permission in permission_classes]

@@ -27,3 +27,10 @@ class IsApprovedChannel(BasePermission):
             return channel.status == YoutubeChannel.APPROVED
         except YoutubeChannel.DoesNotExist:
             return False
+
+
+class HasEmptyVideo(BasePermission):
+    def has_object_permission(self, request, view, channel):
+        if len(channel.youtube_videos.all()) != 0:
+            return False
+        return True
