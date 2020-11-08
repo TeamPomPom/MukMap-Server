@@ -1,4 +1,5 @@
 import jwt
+from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework.decorators import action
