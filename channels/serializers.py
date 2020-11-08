@@ -18,6 +18,20 @@ class YoutubeChannelSerializer(serializers.ModelSerializer):
         model = YoutubeChannel
         exclude = ("user", "status")
 
+    def create(self, validated_data):
+        if (
+            YoutubeChannel.objects.exclude(deleted__isnull=False)
+            .filter(channel_id=validated_data.get("channel_id"))
+            .exists()
+        ):
+            raise serializers.ValidationError("Sign up process already done")
+        request = self.context.get("request")
+        channels = super().create(validated_data)
+        channels.status = YoutubeChannel.WANT_SIGN_UP
+        channels.user = request.user
+        channels.save()
+        return channels
+
 
 class YoutubeChannelDetailSerializer(serializers.ModelSerializer):
 
