@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from core import models as core_models
 
 
-class User(AbstractUser, core_models.TimeStampedModel):
+class User(core_models.TimeStampedModel, AbstractUser):
 
     favorite = models.ManyToManyField(
         "videos.YoutubeVideo", related_name="users", through="UserFavoriteVideo"

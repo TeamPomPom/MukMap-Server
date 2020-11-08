@@ -4,14 +4,13 @@ from .models import User, UserFavoriteVideo, UserSubscribeChannel
 
 class UserSerializer(serializers.ModelSerializer):
 
-    password = serializers.CharField(write_only=True)
-    google_id = serializers.CharField(write_only=True)
-    facebook_id = serializers.CharField(write_only=True)
-    apple_id = serializers.CharField(write_only=True)
+    google_id = serializers.CharField(write_only=True, required=False)
+    facebook_id = serializers.CharField(write_only=True, required=False)
+    apple_id = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ("id", "username", "google_id", "facebook_id", "apple_id", "password")
+        fields = ("id", "username", "google_id", "facebook_id", "apple_id")
 
     def create(self, validated_data):
         google_id = validated_data.get("google_id")

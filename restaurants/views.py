@@ -12,7 +12,7 @@ class RestaurantViewSet(APIKeyModelViewSet):
     serializer_class = RestaurantsSerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if self.action == "list" or self.action == "retrieve":
             permission_classes += [permissions.AllowAny]
         # If owner of youtube channel want to create restaurants data when create video data, owner should be login status

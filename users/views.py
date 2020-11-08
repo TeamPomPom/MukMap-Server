@@ -1,4 +1,5 @@
 import jwt
+from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -20,7 +21,7 @@ class UserViewSet(APIKeyModelViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if self.action == "list":
             permission_classes += [IsAdminUser]
         elif self.action == "create" or self.action == "login":
@@ -61,11 +62,11 @@ class UserViewSet(APIKeyModelViewSet):
 
     @favorites.mapping.put
     def toggle_favorites(self, request, pk):
-        pk = request.data.get("pk", None)
+        video_id = request.data.get("video_id", None)
         user = self.get_object()
-        if pk is not None:
+        if video_id is not None:
             try:
-                youtube_video = YoutubeVideo.objects.get(pk=pk)
+                youtube_video = YoutubeVideo.objects.get(pk=video_id)
                 if youtube_video in user.favorite.all():
                     user.favorite.remove(youtube_video)
                 else:
@@ -84,11 +85,11 @@ class UserViewSet(APIKeyModelViewSet):
 
     @subscribes.mapping.put
     def toggle_subscribes(self, request, pk):
-        pk = request.data.get("pk", None)
+        channel_id = request.data.get("channel_id", None)
         user = self.get_object()
-        if pk is not None:
+        if channel_id is not None:
             try:
-                youtube_channel = YoutubeChannel.objects.get(pk=pk)
+                youtube_channel = YoutubeChannel.objects.get(pk=channel_id)
                 if youtube_channel in user.subscribe.all():
                     user.subscribe.remove(youtube_channel)
                 else:

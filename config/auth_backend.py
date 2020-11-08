@@ -4,7 +4,7 @@ from users.models import User
 
 class SNSAuthBackend(ModelBackend):
     def authenticate(
-        self, username=None, google_id=None, facebook_id=None, apple_id=None
+        self, request, username=None, google_id=None, facebook_id=None, apple_id=None
     ):
         try:
             if google_id:

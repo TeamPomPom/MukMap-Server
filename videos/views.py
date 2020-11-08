@@ -29,7 +29,7 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
     serializer_class = YoutubueVideoSerializer
 
     def get_permissions(self):
-        permission_classes = self.permission_classes
+        permission_classes = self.get_base_permission()
         if (
             self.action == "retrieve"
             or self.action == "geo_search"
@@ -77,6 +77,7 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
 
         if not query or not device_token:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        raw_query = query
         region_query = []
         food_query = []
         channel_query = []
@@ -113,7 +114,7 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
         except Device.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         device_search_log = DeviceSearchLog.objects.create(
-            search_keyword=query, device=device
+            search_keyword=raw_query, device=device
         )
         if food_query:
             device_search_log.food_keyword = str(food_query)
