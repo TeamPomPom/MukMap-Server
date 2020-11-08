@@ -185,6 +185,8 @@ if not DEBUG:
 
 DEFAULT_PAGE_SIZE = 30
 
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
+
 if DEBUG:
     REST_FRAMEWORK = {
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
