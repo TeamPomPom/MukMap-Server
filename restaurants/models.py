@@ -17,3 +17,8 @@ class Restaurants(core_models.TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+    def delete(self):
+        youtube_videos = self.youtube_videos.all()
+        youtube_videos.delete()
+        super().delete()

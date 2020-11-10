@@ -26,7 +26,7 @@ class YoutubeVideo(core_models.TimeStampedModel):
     restaurant = models.ForeignKey(
         "restaurants.Restaurants",
         related_name="youtube_videos",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=False,
     )
     embeddable = models.BooleanField(default=False)
