@@ -6,7 +6,7 @@ class DeviceClickLog(core_models.TimeStampedModel):
     device = models.ForeignKey(
         "devices.Device",
         related_name="device_click_logs",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
     )
     youtube_video = models.ForeignKey(
         "videos.YoutubeVideo",
@@ -27,7 +27,7 @@ class DeviceSearchLog(core_models.TimeStampedModel):
     device = models.ForeignKey(
         "devices.Device",
         related_name="device_search_logs",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
     )
     food_keyword = models.TextField(blank=True, null=True)
     region_keyword = models.TextField(blank=True, null=True)
