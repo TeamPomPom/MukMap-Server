@@ -16,3 +16,8 @@ class Subways(core_models.TimeStampedModel):
 
     def __str__(self):
         return self.station_name
+
+    def delete(self):
+        subways_near_restaurants = self.subways_near_restaurants.all()
+        subways_near_restaurants.delete()
+        super().delete()
