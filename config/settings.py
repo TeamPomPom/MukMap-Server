@@ -53,6 +53,7 @@ PROJECT_APPS = [
     "channels.apps.ChannelsConfig",
     "logs.apps.LogsConfig",
     "videos.apps.VideosConfig",
+    "subways.apps.SubwaysConfig",
 ]
 
 THIRD_PARTY_APPS = [
