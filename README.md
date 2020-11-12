@@ -6,7 +6,6 @@
 - PR의 제목은, milestone 버전 명으로 시작 해주세요 ( ex_ milestone 1.0에 관련된 PR이라면, M1.0 또는 milestone 1.0 등으로 시작 해주세요 )
 
 ## Naming convention
-
 > Formatter로 Python의 black을 사용 합니다. 
 
 ### Apps
@@ -19,3 +18,7 @@
 - model의 상수 값들은 UPPER_CASE 규칙을 따릅니다. 
 - Foreign Key를 사용하는 필드의 related_name은 모델 클래스 명의 복수 형태를 snake_case로 변환한 형태로 표기합니다. [공식 문서의 예제](https://docs.djangoproject.com/en/2.2/ref/models/fields/#django.db.models.ManyToManyField.through_fields)
 - db_table 명을 항상 지정 해주시고, 테이블 명은 snake_case 규칙을 따릅니다. 
+
+## Project structure
+- 범용적으로 사용 가능하고, 각 앱들에 종속되지 않는 클래스는 config / core에 생성 해 주시면 됩니다. (ex_ authentication.py, SoftDeletionModel ... )
+- 범용적으로 사용 가능하나 각 앱들에 종속되는 클래스는 각 앱에 생성 해 주시면 됩니다. (ex_ apps/permissions.py & apps/validates.py ... )
