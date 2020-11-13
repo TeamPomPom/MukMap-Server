@@ -32,6 +32,7 @@ class DeviceSearchLog(core_models.TimeStampedModel):
     food_keyword = models.TextField(blank=True, null=True)
     region_keyword = models.TextField(blank=True, null=True)
     channel_keyword = models.TextField(blank=True, null=True)
+    subway_keyword = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = "device_search_log"
