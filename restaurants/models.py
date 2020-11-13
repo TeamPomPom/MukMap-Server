@@ -12,7 +12,7 @@ class Restaurants(core_models.TimeStampedModel):
     district = models.CharField(max_length=100)
     old_district = models.CharField(max_length=50)
     subway = models.ManyToManyField(
-        "subways.Subways", related_name="restaurants", through="SubwaysNearRestaurants"
+        "subways.Subway", related_name="restaurants", through="SubwaysNearRestaurants"
     )
 
     class Meta:
@@ -34,7 +34,7 @@ class SubwaysNearRestaurants(core_models.TimeStampedModel):
         "Restaurants", related_name="subways_near_restaurants", on_delete=models.CASCADE
     )
     subway = models.ForeignKey(
-        "subways.Subways",
+        "subways.Subway",
         related_name="subways_near_restaurants",
         on_delete=models.CASCADE,
     )

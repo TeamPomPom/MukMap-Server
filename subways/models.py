@@ -2,7 +2,7 @@ from django.db import models
 from core import models as core_models
 
 
-class Subways(core_models.TimeStampedModel):
+class Subway(core_models.TimeStampedModel):
 
     station_name = models.CharField(max_length=150)
     full_address = models.CharField(max_length=500)
@@ -12,7 +12,7 @@ class Subways(core_models.TimeStampedModel):
     alias = models.CharField(max_length=50)
 
     class Meta:
-        db_table = "subways"
+        db_table = "subway"
 
     def __str__(self):
         return self.station_name

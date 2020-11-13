@@ -7,26 +7,33 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Subways',
+            name="Subway",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deleted', models.DateTimeField(null=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('station_name', models.CharField(max_length=150)),
-                ('full_address', models.CharField(max_length=500)),
-                ('lat', models.DecimalField(decimal_places=7, max_digits=20)),
-                ('lng', models.DecimalField(decimal_places=7, max_digits=20)),
-                ('line', models.CharField(max_length=40)),
-                ('alias', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deleted", models.DateTimeField(null=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("station_name", models.CharField(max_length=150)),
+                ("full_address", models.CharField(max_length=500)),
+                ("lat", models.DecimalField(decimal_places=7, max_digits=20)),
+                ("lng", models.DecimalField(decimal_places=7, max_digits=20)),
+                ("line", models.CharField(max_length=40)),
+                ("alias", models.CharField(max_length=50)),
             ],
             options={
-                'db_table': 'subways',
+                "db_table": "subway",
             },
         ),
     ]

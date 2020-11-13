@@ -7,28 +7,54 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('subways', '0001_initial'),
-        ('restaurants', '0003_auto_20201108_0756'),
+        ("subways", "0001_initial"),
+        ("restaurants", "0003_auto_20201108_0756"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SubwaysNearRestaurants',
+            name="SubwaysNearRestaurants",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deleted', models.DateTimeField(null=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('restaurant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subways_near_restaurants', to='restaurants.Restaurants')),
-                ('subway', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subways_near_restaurants', to='subways.Subways')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deleted", models.DateTimeField(null=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "restaurant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subways_near_restaurants",
+                        to="restaurants.Restaurants",
+                    ),
+                ),
+                (
+                    "subway",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subways_near_restaurants",
+                        to="subways.Subway",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'subways_near_restaurants',
+                "db_table": "subways_near_restaurants",
             },
         ),
         migrations.AddField(
-            model_name='restaurants',
-            name='subway',
-            field=models.ManyToManyField(related_name='restaurants', through='restaurants.SubwaysNearRestaurants', to='subways.Subways'),
+            model_name="restaurants",
+            name="subway",
+            field=models.ManyToManyField(
+                related_name="restaurants",
+                through="restaurants.SubwaysNearRestaurants",
+                to="subways.Subway",
+            ),
         ),
     ]
