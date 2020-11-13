@@ -19,7 +19,8 @@ from logs.models import DeviceSearchLog
 from channels.models import YoutubeChannel
 from channels.permissions import IsApprovedChannel
 from channels.serializers import YoutubeChannelSerializer
-from restaurants.models import Restaurants
+from restaurants.models import Restaurants, SubwaysNearRestaurants
+from subways.models import Subway
 from foods.models import MainFoodCategory, SubFoodCategory
 
 
@@ -81,6 +82,7 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
         region_query = []
         food_query = []
         channel_query = []
+        subway_query = []
         split_query = query.split()
         for query in split_query:
             count_list = []
@@ -109,6 +111,10 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
                 channel_query.append(query)
             else:
                 food_query.append(query)
+            if Subway.objects.filter(
+                Q(station_name__icontains=query) | Q(alias__icontains=query)
+            ).exists():
+                subway_query.append(query)
         try:
             device = Device.objects.get(device_token=device_token)
         except Device.DoesNotExist:
@@ -122,6 +128,8 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
             device_search_log.region_keyword = str(region_query)
         if channel_query:
             device_search_log.channel_keyword = str(channel_query)
+        if subway_query:
+            device_search_log.subway_keyword = str(subway_query)
         device_search_log.save()
 
         try:
@@ -140,6 +148,19 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
             )
         except Exception:
             sub_food_category = SubFoodCategory.objects.all()
+
+        try:
+            subway = Subway.objects.filter(
+                functools.reduce(
+                    operator.or_, (Q(station_name__icontains=x) for x in subway_query)
+                )
+                | functools.reduce(
+                    operator.or_, (Q(alias__icontains=x) for x in subway_query)
+                )
+            )
+        except Exception:
+            subway = Subway.objects.none()
+
         try:
             restaurant = Restaurants.objects.filter(
                 functools.reduce(
@@ -157,6 +178,7 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
                 | functools.reduce(
                     operator.or_, (Q(old_district__icontains=x) for x in region_query)
                 )
+                | Q(subway__id__in=subway.values_list("id"))
             )
         except Exception:
             restaurant = Restaurants.objects.all()
