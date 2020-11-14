@@ -1,8 +1,11 @@
+from haversine import haversine
 from rest_framework import permissions
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from config.views import APIKeyModelViewSet
 from .models import Restaurants
-from .serializers import RestaurantsSerializer
+from .serializers import RestaurantsSerializer, GeoSearchRestaurantSerializer
 from channels.permissions import IsApprovedChannel
 
 
@@ -13,7 +16,11 @@ class RestaurantViewSet(APIKeyModelViewSet):
 
     def get_permissions(self):
         permission_classes = self.get_base_permission()
-        if self.action == "list" or self.action == "retrieve":
+        if (
+            self.action == "list"
+            or self.action == "retrieve"
+            or self.action == "geo_search"
+        ):
             permission_classes += [permissions.AllowAny]
         # If owner of youtube channel want to create restaurants data when create video data, owner should be login status
         elif self.action == "create":
@@ -23,3 +30,27 @@ class RestaurantViewSet(APIKeyModelViewSet):
         else:
             permission_classes += [permissions.IsAdminUser]
         return [permission() for permission in permission_classes]
+
+    @action(detail=False, methods=["get"])
+    def geo_search(self, request):
+        lat = request.GET.get("lat", None)
+        lng = request.GET.get("lng", None)
+
+        if not lat or not lng:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        lat = float(lat)
+        lng = float(lng)
+        search_pos = (lat, lng)
+        squar_restaurants = Restaurants.objects.filter(
+            lat__range=(lat - 0.01, lat + 0.01),
+            lng__range=(lng - 0.015, lng + 0.015),
+        )
+        circle_restaurants = [
+            restuarant
+            for restuarant in squar_restaurants
+            if haversine(search_pos, (restuarant.lat, restuarant.lng)) <= 2
+        ]
+        serializer = GeoSearchRestaurantSerializer(
+            circle_restaurants, many=True, context={"request": request}
+        )
+        return Response(serializer.data)

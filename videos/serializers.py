@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import YoutubeVideo
-from users.models import UserFavoriteVideo, UserSubscribeChannel
+from users.models import UserFavoriteVideo
 from channels.serializers import RelatedYoutubeChannelSerializer
 from restaurants.serializers import RelatedRestaurantsSerializer
 from restaurants.models import Restaurants
@@ -17,7 +17,6 @@ class YoutubueVideoSerializer(serializers.ModelSerializer):
     sub_food_category = RelatedSubFoodCategorySerializer(read_only=True, many=True)
     youtube_channel = RelatedYoutubeChannelSerializer(read_only=True)
     restaurant = RelatedRestaurantsSerializer(read_only=True)
-    is_subscribe = serializers.SerializerMethodField()
 
     class Meta:
         model = YoutubeVideo
@@ -65,13 +64,3 @@ class YoutubueVideoSerializer(serializers.ModelSerializer):
             youtube_video.sub_food_category.add(sub_food_category)
 
         return youtube_video
-
-    def get_is_subscribe(self, youtube_video):
-        request = self.context.get("request")
-        if request:
-            user = request.user
-            if user.is_authenticated:
-                return UserSubscribeChannel.objects.filter(
-                    user=user, youtube_channel=youtube_video.youtube_channel
-                ).exists()
-        return False
