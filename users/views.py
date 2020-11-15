@@ -11,6 +11,8 @@ from config.views import APIKeyModelViewSet
 from .permissions import IsOwner
 from .models import User
 from .serializers import UserSerializer
+from restaurants.models import Restaurants
+from restaurants.serializers import RelatedRestaurantsSerializer
 from videos.models import YoutubeVideo
 from videos.serializers import YoutubueVideoSerializer
 from channels.models import YoutubeChannel
@@ -61,22 +63,30 @@ class UserViewSet(APIKeyModelViewSet):
     @action(detail=True)
     def favorites(self, request, pk):
         user = self.get_object()
-        serializer = YoutubueVideoSerializer(user.favorite.all(), many=True)
+        favorites_info = user.user_favorite_restaurants.all()
+        restaurants = Restaurants.objects.filter(
+            id__in=favorites_info.values_list("restaurant_id")
+        )
+        serializer = RelatedRestaurantsSerializer(restaurants, many=True)
         return Response(serializer.data)
 
     @favorites.mapping.put
     def toggle_favorites(self, request, pk):
-        video_id = request.data.get("video_id", None)
+        restaurant_id = request.data.get("restaurant_id", None)
         user = self.get_object()
-        if video_id is not None:
+        if restaurant_id is not None:
             try:
-                youtube_video = YoutubeVideo.objects.get(pk=video_id)
-                if youtube_video in user.favorite.all():
-                    user.favorite.remove(youtube_video)
+                restaurant = Restaurants.objects.get(pk=restaurant_id)
+                favorites_info = user.user_favorite_restaurants.all()
+                restaurants = Restaurants.objects.filter(
+                    id__in=favorites_info.values_list("restaurant_id")
+                )
+                if restaurant in restaurants:
+                    user.favorite.remove(restaurant)
                 else:
-                    user.favorite.add(youtube_video)
+                    user.favorite.add(restaurant)
                 return Response()
-            except YoutubeVideo.DoesNotExist:
+            except Restaurants.DoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -35,11 +35,11 @@ class User(core_models.TimeStampedModel, AbstractUser):
 
 class UserFavoriteRestaurant(core_models.TimeStampedModel):
     user = models.ForeignKey(
-        "User", related_name="user_favorite_videos", on_delete=models.CASCADE
+        "User", related_name="user_favorite_restaurants", on_delete=models.CASCADE
     )
     restaurant = models.ForeignKey(
         "restaurants.Restaurants",
-        related_name="user_favorite_videos",
+        related_name="user_favorite_restaurants",
         on_delete=models.CASCADE,
     )
 
