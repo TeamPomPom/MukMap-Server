@@ -10,7 +10,7 @@ class RelatedRestaurantsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class GeoSearchRestaurantSerializer(serializers.ModelSerializer):
+class SearchRestaurantSerializer(serializers.ModelSerializer):
 
     youtube_channel = serializers.SerializerMethodField()
 
