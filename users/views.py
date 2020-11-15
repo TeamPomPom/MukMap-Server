@@ -84,7 +84,11 @@ class UserViewSet(APIKeyModelViewSet):
     @action(detail=True)
     def subscribes(self, request, pk):
         user = self.get_object()
-        serializer = YoutubeChannelSerializer(user.subscribe.all(), many=True)
+        subscribe_info = user.user_subscribe_channels.all()
+        channels = YoutubeChannel.objects.filter(
+            id__in=subscribe_info.values_list("youtube_channel_id")
+        )
+        serializer = YoutubeChannelSerializer(channels, many=True)
         return Response(serializer.data)
 
     @subscribes.mapping.put
@@ -94,7 +98,11 @@ class UserViewSet(APIKeyModelViewSet):
         if channel_id is not None:
             try:
                 youtube_channel = YoutubeChannel.objects.get(pk=channel_id)
-                if youtube_channel in user.subscribe.all():
+                subscribe_info = user.user_subscribe_channels.all()
+                subscribe_channels = YoutubeChannel.objects.filter(
+                    id__in=subscribe_info.values_list("youtube_channel_id")
+                )
+                if youtube_channel in subscribe_channels:
                     user.subscribe.remove(youtube_channel)
                 else:
                     user.subscribe.add(youtube_channel)
