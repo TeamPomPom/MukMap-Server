@@ -45,17 +45,22 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
         )
         for video in youtube_videos:
             channel = {}
-            channel["channel_id"] = video.youtube_channel.id
-            channel["channel_name"] = video.youtube_channel.channel_name
-            channel["channel_thumbnail"] = video.youtube_channel.channel_thumbnail
-            channel["is_subscribe"] = False
-            if request:
-                user = request.user
-                if user.is_authenticated:
-                    channel["is_subscribe"] = UserSubscribeChannel.objects.filter(
-                        user=user, youtube_channel=video.youtube_channel
-                    ).exists()
-            result_channel.append(channel)
+            youtube_channel = video.youtube_channel
+            if not any(
+                channel_data["channel_id"] == youtube_channel.id
+                for channel_data in result_channel
+            ):
+                channel["channel_id"] = youtube_channel.id
+                channel["channel_name"] = youtube_channel.channel_name
+                channel["channel_thumbnail"] = youtube_channel.channel_thumbnail
+                channel["is_subscribe"] = False
+                if request:
+                    user = request.user
+                    if user.is_authenticated:
+                        channel["is_subscribe"] = UserSubscribeChannel.objects.filter(
+                            user=user, youtube_channel=youtube_channel
+                        ).exists()
+                result_channel.append(channel)
         return result_channel
 
     def get_is_favorite(self, restaurant):
