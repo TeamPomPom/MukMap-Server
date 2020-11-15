@@ -6,7 +6,9 @@ from core import models as core_models
 class User(core_models.TimeStampedModel, AbstractUser):
 
     favorite = models.ManyToManyField(
-        "videos.YoutubeVideo", related_name="users", through="UserFavoriteVideo"
+        "restaurants.Restaurants",
+        related_name="users",
+        through="UserFavoriteRestaurant",
     )
     subscribe = models.ManyToManyField(
         "channels.YoutubeChannel", related_name="users", through="UserSubscribeChannel"
@@ -31,12 +33,12 @@ class User(core_models.TimeStampedModel, AbstractUser):
         super().delete()
 
 
-class UserFavoriteVideo(core_models.TimeStampedModel):
+class UserFavoriteRestaurant(core_models.TimeStampedModel):
     user = models.ForeignKey(
         "User", related_name="user_favorite_videos", on_delete=models.CASCADE
     )
-    youtube_video = models.ForeignKey(
-        "videos.YoutubeVideo",
+    restaurant = models.ForeignKey(
+        "restaurants.Restaurants",
         related_name="user_favorite_videos",
         on_delete=models.CASCADE,
     )

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserFavoriteVideo, UserSubscribeChannel
+from .models import User, UserSubscribeChannel, UserFavoriteRestaurant
 
 
 class UserSerializer(serializers.ModelSerializer):

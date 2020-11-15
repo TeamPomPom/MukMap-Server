@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import YoutubeVideo
-from users.models import UserFavoriteVideo
+from users.models import UserFavoriteRestaurant
 from channels.serializers import RelatedYoutubeChannelSerializer
 from restaurants.serializers import RelatedRestaurantsSerializer
 from restaurants.models import Restaurants

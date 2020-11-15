@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserFavoriteVideo, UserSubscribeChannel
+from .models import User, UserSubscribeChannel, UserFavoriteRestaurant
 
 
 @admin.register(User)
@@ -7,8 +7,8 @@ class UserAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(UserFavoriteVideo)
-class UserFavoriteVideoAdmin(admin.ModelAdmin):
+@admin.register(UserFavoriteRestaurant)
+class UserFavoriteRestaurantAdmin(admin.ModelAdmin):
     pass
 
 
