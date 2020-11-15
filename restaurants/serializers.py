@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Restaurants
 from channels.models import YoutubeChannel
-from users.models import UserSubscribeChannel
+from users.models import UserSubscribeChannel, UserFavoriteRestaurant
 
 
 class RelatedRestaurantsSerializer(serializers.ModelSerializer):
@@ -13,11 +13,28 @@ class RelatedRestaurantsSerializer(serializers.ModelSerializer):
 class SearchRestaurantSerializer(serializers.ModelSerializer):
 
     youtube_channel = serializers.SerializerMethodField()
+    is_favorite = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurants
-        fields = ("id", "name", "lat", "lng", "full_address", "youtube_channel")
-        read_only_fields = ("id", "name", "lat", "lng", "full_address")
+        fields = (
+            "id",
+            "name",
+            "lat",
+            "lng",
+            "full_address",
+            "youtube_channel",
+            "is_favorite",
+        )
+        read_only_fields = (
+            "id",
+            "name",
+            "lat",
+            "lng",
+            "full_address",
+            "youtube_channel",
+            "is_favorite",
+        )
 
     def get_youtube_channel(self, restaurant):
         request = self.context.get("request")
@@ -40,6 +57,16 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
                     ).exists()
             result_channel.append(channel)
         return result_channel
+
+    def get_is_favorite(self, restaurant):
+        request = self.context.get("request")
+        if request:
+            user = request.user
+            if user.is_authenticated:
+                return UserFavoriteRestaurant.objects.filter(
+                    user=user, restaurant=restaurant
+                ).exists()
+        return False
 
 
 class RestaurantsSerializer(serializers.ModelSerializer):
