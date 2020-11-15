@@ -10,7 +10,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, renderer_classes
 from config.views import APIKeyModelViewSet
 from .models import Restaurants, SubwaysNearRestaurants
-from .serializers import RestaurantsSerializer, SearchRestaurantSerializer
+from .serializers import (
+    RestaurantsSerializer,
+    SearchRestaurantSerializer,
+    RestaurantDetailSerializer,
+)
 from .renderers import QuerySearchResultRenderer
 from devices.models import Device
 from logs.models import DeviceSearchLog
@@ -44,6 +48,11 @@ class RestaurantViewSet(APIKeyModelViewSet):
         else:
             permission_classes += [permissions.IsAdminUser]
         return [permission() for permission in permission_classes]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return RestaurantDetailSerializer
+        return self.serializer_class
 
     @action(detail=False, methods=["get"])
     def geo_search(self, request):

@@ -1,7 +1,10 @@
 from rest_framework import serializers
+from config.global_utils import common_list
 from .models import Restaurants
 from channels.models import YoutubeChannel
 from users.models import UserSubscribeChannel, UserFavoriteRestaurant
+from videos.models import YoutubeVideo
+from foods.models import SubFoodCategory, MainFoodCategory
 
 
 class RelatedRestaurantsSerializer(serializers.ModelSerializer):
@@ -72,6 +75,33 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
                     user=user, restaurant=restaurant
                 ).exists()
         return False
+
+
+class RestaurantDetailSerializer(serializers.ModelSerializer):
+
+    tags = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Restaurants
+        fields = "__all__"
+
+    def get_tags(self, restaurant):
+        youtube_video_query_set = YoutubeVideo.objects.filter(restaurant=restaurant)
+        main_food_category_list = list(
+            youtube_video_query_set.values_list("main_food_category", flat=True)
+        )
+        sub_food_category_list = list(
+            youtube_video_query_set.values_list("sub_food_category", flat=True)
+        )
+        tags = []
+        main_common_list = common_list(main_food_category_list, 1)
+        sub_common_list = common_list(sub_food_category_list, 3)
+
+        for main_common_data in main_common_list:
+            tags.append(MainFoodCategory.objects.get(id=main_common_data[0]).name)
+        for sub_common_data in sub_common_list:
+            tags.append(SubFoodCategory.objects.get(id=sub_common_data[0]).name)
+        return tags
 
 
 class RestaurantsSerializer(serializers.ModelSerializer):
