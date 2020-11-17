@@ -45,11 +45,13 @@ class UserViewSet(APIKeyModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if google_id:
-            user = authenticate(username=username, google_id=google_id)
+            user = authenticate(username="google_id:" + username, google_id=google_id)
         elif facebook_id:
-            user = authenticate(username=username, facebook_id=facebook_id)
+            user = authenticate(
+                username="facebook_id:" + username, facebook_id=facebook_id
+            )
         elif apple_id:
-            user = authenticate(username=username, apple_id=apple_id)
+            user = authenticate(username="apple_id:" + username, apple_id=apple_id)
         if user is not None:
             encoded_jwt = jwt.encode(
                 {"pk": user.pk, "exp": timezone.now() + timedelta(days=15)},

@@ -12,16 +12,46 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("id", "username", "google_id", "facebook_id", "apple_id")
 
+    def validate(self, data):
+        google_id = data.get("google_id")
+        facebook_id = data.get("facebook_id")
+        apple_id = data.get("apple_id")
+        sns_cnt = 0
+        if google_id:
+            sns_cnt += 1
+        if facebook_id:
+            sns_cnt += 1
+        if apple_id:
+            sns_cnt += 1
+        if sns_cnt != 1:
+            raise serializers.ValidationError("You must send SNS id properly")
+        if not self.instance:
+            username = data.get("username")
+            if google_id:
+                username = "google_id:" + username
+            elif facebook_id:
+                username = "facebook_id:" + username
+            elif apple_id:
+                username = "apple_id:" + username
+            if User.objects.filter(username=username).exists():
+                raise serializers.ValidationError("User " + username + " already exist")
+        return data
+
     def create(self, validated_data):
         google_id = validated_data.get("google_id")
         facebook_id = validated_data.get("facebook_id")
         apple_id = validated_data.get("apple_id")
-        password = validated_data.get("password")
-
-        if google_id or facebook_id or apple_id:
-            user = super().create(validated_data)
-            user.set_unusable_password()
-            user.save()
-            return user
-        else:
-            raise serializers.ValidationError("You must send SNS id")
+        username = validated_data.get("username")
+        if google_id:
+            username = "google_id:" + username
+        elif facebook_id:
+            username = "facebook_id:" + username
+        elif apple_id:
+            username = "apple_id:" + username
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError("User already exist")
+        user = super().create(validated_data)
+        user.username = username
+        user.set_unusable_password()
+        user.save()
+        return user
