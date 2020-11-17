@@ -23,7 +23,7 @@ class YoutubeChannel(core_models.TimeStampedModel):
     channel_thumbnail = models.TextField()
     channel_id = models.CharField(max_length=100)
     channel_desc = models.TextField(max_length=10000, blank=True)
-    channel_country = CountryField(default="KR").formfield()
+    channel_country = CountryField(default="KR")
     channel_keyword = models.CharField(max_length=500, blank=True)
     user = models.ForeignKey(
         "users.User",
