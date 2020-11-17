@@ -10,13 +10,13 @@ class YoutubeVideo(core_models.TimeStampedModel):
         "channels.YoutubeChannel",
         related_name="youtube_videos",
         on_delete=models.PROTECT,
-        null=False,
+        null=True,
     )
     main_food_category = models.ForeignKey(
         "foods.MainFoodCategory",
         related_name="youtube_videos",
         on_delete=models.PROTECT,
-        null=False,
+        null=True,
     )
     sub_food_category = models.ManyToManyField(
         "foods.SubFoodCategory",
@@ -27,7 +27,7 @@ class YoutubeVideo(core_models.TimeStampedModel):
         "restaurants.Restaurants",
         related_name="youtube_videos",
         on_delete=models.CASCADE,
-        null=False,
+        null=True,
     )
     embeddable = models.BooleanField()
 
