@@ -29,46 +29,30 @@ class YoutubeVideo(core_models.TimeStampedModel):
         on_delete=models.CASCADE,
         null=False,
     )
-    embeddable = models.BooleanField(default=False)
+    embeddable = models.BooleanField()
 
-    youtube_video_thumbnail = models.TextField(max_length=500, blank=True)
-    youtube_video_tags = models.TextField(max_length=1000, blank=True)
-    youtube_video_duration = models.IntegerField(default=0)
-    youtube_video_start_time = models.IntegerField(default=0)
-    youtube_video_published_at = models.DateTimeField(blank=True, null=True)
+    youtube_video_thumbnail = models.TextField()
+    youtube_video_tags = models.TextField(blank=True)
+    youtube_video_duration = models.IntegerField()
+    youtube_video_start_time = models.IntegerField()
+    youtube_video_published_at = models.DateTimeField()
     is_advertising = models.BooleanField(default=False, null=False)
 
     # For localized video title
-    youtube_video_original_title = models.CharField(max_length=300, blank=True)
-    youtube_video_korean_title = models.CharField(max_length=300, null=True, blank=True)
-    youtube_video_english_title = models.CharField(
-        max_length=300, null=True, blank=True
-    )
-    youtube_video_japanese_title = models.CharField(
-        max_length=300, null=True, blank=True
-    )
-    youtube_video_chinese_title = models.CharField(
-        max_length=300, null=True, blank=True
-    )
-    youtube_video_vietnamese_title = models.CharField(
-        max_length=300, null=True, blank=True
-    )
+    youtube_video_original_title = models.TextField()
+    youtube_video_korean_title = models.TextField(null=True, blank=True)
+    youtube_video_english_title = models.TextField(null=True, blank=True)
+    youtube_video_japanese_title = models.TextField(null=True, blank=True)
+    youtube_video_chinese_title = models.TextField(null=True, blank=True)
+    youtube_video_vietnamese_title = models.TextField(null=True, blank=True)
 
     # For localized video description
-    youtube_video_original_desc = models.TextField(max_length=1000, blank=True)
-    youtube_video_korean_desc = models.TextField(max_length=1000, null=True, blank=True)
-    youtube_video_english_desc = models.TextField(
-        max_length=1000, null=True, blank=True
-    )
-    youtube_video_japanese_desc = models.TextField(
-        max_length=1000, null=True, blank=True
-    )
-    youtube_video_chinese_desc = models.TextField(
-        max_length=1000, null=True, blank=True
-    )
-    youtube_video_vietnamese_desc = models.TextField(
-        max_length=1000, null=True, blank=True
-    )
+    youtube_video_original_desc = models.TextField()
+    youtube_video_korean_desc = models.TextField(null=True, blank=True)
+    youtube_video_english_desc = models.TextField(null=True, blank=True)
+    youtube_video_japanese_desc = models.TextField(null=True, blank=True)
+    youtube_video_chinese_desc = models.TextField(null=True, blank=True)
+    youtube_video_vietnamese_desc = models.TextField(null=True, blank=True)
 
     # For caption
     youtube_video_korean_caption = models.IntegerField(null=True, blank=True)
