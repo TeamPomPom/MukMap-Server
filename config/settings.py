@@ -110,7 +110,7 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT"),
         "OPTIONS": {
             "autocommit": True,
-            "charset": "utf8",
+            "charset": "utf8mb4",
             "use_unicode": True,
             "use_pure": True,
         },
