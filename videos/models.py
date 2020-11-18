@@ -47,7 +47,7 @@ class YoutubeVideo(core_models.TimeStampedModel):
     youtube_video_vietnamese_title = models.TextField(null=True, blank=True)
 
     # For localized video description
-    youtube_video_original_desc = models.TextField()
+    youtube_video_original_desc = models.TextField(null=True, blank=True)
     youtube_video_korean_desc = models.TextField(null=True, blank=True)
     youtube_video_english_desc = models.TextField(null=True, blank=True)
     youtube_video_japanese_desc = models.TextField(null=True, blank=True)
