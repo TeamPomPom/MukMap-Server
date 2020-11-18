@@ -1,4 +1,5 @@
 from django.db.models import Manager, QuerySet
+from django.utils import timezone
 
 
 class SoftDeleteQuerySet(QuerySet):
@@ -14,3 +15,16 @@ class SoftDeleteManager(Manager):
         return SoftDeleteQuerySet(
             model=self.model, using=self._db, hints=self._hints
         ).filter(deleted__isnull=True)
+
+
+class RemovedOldDataQueryManager(SoftDeleteManager):
+    def get_queryset(self, *args, **kwargs):
+        return (
+            super()
+            .get_queryset(*args, **kwargs)
+            .filter(
+                youtube_video_published_at__gte=timezone.now().replace(
+                    year=timezone.now().year - 2
+                )
+            )
+        )

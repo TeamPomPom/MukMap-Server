@@ -2,7 +2,7 @@ from django.db import models
 from core import models as core_models
 
 
-class YoutubeVideo(core_models.TimeStampedModel):
+class YoutubeVideo(core_models.RemovedOldDataTimeStampedModel):
 
     youtube_video_id = models.CharField(max_length=100, null=False, blank=False)
 
