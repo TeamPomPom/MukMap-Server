@@ -59,6 +59,8 @@ class RestaurantViewSet(APIKeyModelViewSet):
     def geo_search(self, request):
         lat = request.GET.get("lat", None)
         lng = request.GET.get("lng", None)
+        page = request.GET.get("page", 1)
+        page_size = settings.DEFAULT_PAGE_SIZE
 
         if not lat or not lng:
             return Response(
@@ -77,10 +79,18 @@ class RestaurantViewSet(APIKeyModelViewSet):
             for restuarant in squar_restaurants
             if haversine(search_pos, (restuarant.lat, restuarant.lng)) <= 2
         ]
+        paginator = Paginator(circle_restaurants, page_size)
+        try:
+            page = paginator.validate_number(page)
+            circle_restaurants = paginator.get_page(page)
+        except EmptyPage:
+            circle_restaurants = Restaurants.objects.none()
+
         serializer = SearchRestaurantSerializer(
             circle_restaurants, many=True, context={"request": request}
         )
-        return Response(serializer.data)
+        response_dict = {"restaurants": serializer.data}
+        return Response(response_dict)
 
     @action(detail=False, methods=["get"])
     @renderer_classes(QuerySearchResultRenderer)
