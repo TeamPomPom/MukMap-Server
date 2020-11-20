@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import YoutubeVideo
-from .errors import CreateVideoError
+from .errors import VideoAPIError
 from users.models import UserFavoriteRestaurant
 from channels.serializers import RelatedYoutubeChannelSerializer
 from restaurants.serializers import RelatedRestaurantsSerializer
@@ -31,52 +31,52 @@ class YoutubueVideoSerializer(serializers.ModelSerializer):
             sub_food_categories_pk = list(map(int, sub_food_categories_pk.split(",")))
         except ValueError:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_SUB_CATEGORY
+                VideoAPIError.CREATE_VIDEO_INVALID_SUB_CATEGORY
             )
         restaurant_pk = request.data.get("restaurant", None)
 
         if not (main_food_category_pk and sub_food_categories_pk and restaurant_pk):
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_NEED_MORE_INFORMATION
+                VideoAPIError.CREATE_VIDEO_NEED_MORE_INFORMATION
             )
 
         if not all(isinstance(n, int) for n in sub_food_categories_pk):
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_SUB_CATEGORY
+                VideoAPIError.CREATE_VIDEO_INVALID_SUB_CATEGORY
             )
 
         user = request.user
         if not user:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_EMPTY_USER_ERROR
+                VideoAPIError.CREATE_VIDEO_EMPTY_USER_ERROR
             )
         youtube_channel = user.youtube_channels.first()
 
         if not youtube_channel:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_CHANNEL
+                VideoAPIError.CREATE_VIDEO_INVALID_CHANNEL
             )
 
         try:
             main_food_category = MainFoodCategory.objects.get(pk=main_food_category_pk)
         except MainFoodCategory.DoesNotExist:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_MAIN_CATEGORY
+                VideoAPIError.CREATE_VIDEO_INVALID_MAIN_CATEGORY
             )
         except Exception:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_MAIN_CATEGORY
+                VideoAPIError.CREATE_VIDEO_INVALID_MAIN_CATEGORY
             )
 
         try:
             restaurant = Restaurants.objects.get(pk=restaurant_pk)
         except Restaurants.DoesNotExist:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_RESTAURANT
+                VideoAPIError.CREATE_VIDEO_INVALID_RESTAURANT
             )
         except Exception:
             raise serializers.ValidationError(
-                CreateVideoError.CREATE_VIDEO_INVALID_RESTAURANT
+                VideoAPIError.CREATE_VIDEO_INVALID_RESTAURANT
             )
 
         for sub_food_category_index in sub_food_categories_pk:
@@ -86,7 +86,7 @@ class YoutubueVideoSerializer(serializers.ModelSerializer):
                 )
             except SubFoodCategory.DoesNotExist:
                 raise serializers.ValidationError(
-                    CreateVideoError.CREATE_VIDEO_INVALID_SUB_CATEGORY
+                    VideoAPIError.CREATE_VIDEO_INVALID_SUB_CATEGORY
                 )
 
         youtube_video = super().create(validated_data)

@@ -1,7 +1,7 @@
 from core.errors import ErrorCollection, ResponseCode
 
 
-class CreateVideoError(object):
+class VideoAPIError(object):
     CREATE_VIDEO_INVALID_SUB_CATEGORY = ErrorCollection(
         error_code="CREATE_VIDEO_INVALID_SUB_CATEGORY",
         status=ResponseCode.INVALID_PARAMETER,
