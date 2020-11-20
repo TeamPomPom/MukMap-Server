@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Device
 from .serializers import DeviceSerializer
+from .errors import DeviceAPIError
 from config.views import APIKeyModelViewSet
 from logs.models import DeviceSearchLog, DeviceClickLog
 from logs.serializers import DeviceClickLogSerializer, DeviceSearchLogSerializer
@@ -54,6 +55,12 @@ class DeviceViewSet(APIKeyModelViewSet):
                 device_search_log.save()
                 return Response()
             except YoutubeVideo.DoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {str(DeviceAPIError.WRITE_CLICK_DEVICE_LOG_EMPTY_VIDEO_INFO)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {str(DeviceAPIError.WRITE_CLICK_DEVICE_LOG_EMPTY_VIDEO_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

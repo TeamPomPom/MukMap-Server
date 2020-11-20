@@ -16,6 +16,7 @@ from .serializers import (
     RestaurantDetailSerializer,
 )
 from .renderers import QuerySearchResultRenderer
+from .errors import RestaurantAPIError
 from devices.models import Device
 from logs.models import DeviceSearchLog
 from channels.models import YoutubeChannel
@@ -60,7 +61,10 @@ class RestaurantViewSet(APIKeyModelViewSet):
         lng = request.GET.get("lng", None)
 
         if not lat or not lng:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_GEO_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         lat = float(lat)
         lng = float(lng)
         search_pos = (lat, lng)
@@ -86,8 +90,18 @@ class RestaurantViewSet(APIKeyModelViewSet):
         page = request.GET.get("page", 1)
         page_size = settings.DEFAULT_PAGE_SIZE
 
-        if not query or not device_token:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if not query:
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_QUERY_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not device_token:
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_DEVICE_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         raw_query = query
         region_query = []
         food_query = []
@@ -128,7 +142,10 @@ class RestaurantViewSet(APIKeyModelViewSet):
         try:
             device = Device.objects.get(device_token=device_token)
         except Device.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_DEVICE_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         device_search_log = DeviceSearchLog.objects.create(
             search_keyword=raw_query, device=device
         )

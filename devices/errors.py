@@ -7,3 +7,9 @@ class DeviceAPIError(object):
         status=ResponseCode.INVALID_PARAMETER,
         message="Need device token",
     )
+
+    WRITE_CLICK_DEVICE_LOG_EMPTY_VIDEO_INFO = ErrorCollection(
+        error_code="WRITE_CLICK_DEVICE_LOG_EMPTY_VIDEO_INFO",
+        status=ResponseCode.INVALID_PARAMETER,
+        message="You must send proper video data.",
+    )
