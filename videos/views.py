@@ -6,6 +6,7 @@ from config.views import APIKeyModelViewSet
 from .permissions import IsOwnerOfVideo
 from .models import YoutubeVideo
 from .serializers import YoutubueVideoSerializer
+from .errors import VideoAPIError
 from channels.permissions import IsApprovedChannel
 
 
@@ -38,7 +39,10 @@ class YoutubeViedoeViewSet(APIKeyModelViewSet):
         elif channel_id:
             queryset = queryset.filter(Q(youtube_channel__id=channel_id))
         else:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {str(VideoAPIError.GET_VIDEO_LIST_FORBIDDEN)},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         page = self.paginate_queryset(queryset)
         if page is not None:

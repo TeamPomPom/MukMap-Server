@@ -19,3 +19,5 @@ class ResponseCode(object):
     NEED_AUTH = 4
     DUPLICATE_PROPERTY = 5
     ALREADY_PROCESSED = 6
+    FORBIDDEN = 7
+    UNAUTHORIZED = 8

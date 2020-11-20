@@ -11,6 +11,7 @@ from config.views import APIKeyModelViewSet
 from .permissions import IsOwner
 from .models import User
 from .serializers import UserSerializer
+from .errors import UserAPIError
 from restaurants.models import Restaurants
 from restaurants.serializers import RelatedRestaurantsSerializer
 from videos.models import YoutubeVideo
@@ -41,8 +42,17 @@ class UserViewSet(APIKeyModelViewSet):
         facebook_id = request.data.get("facebook_id")
         apple_id = request.data.get("apple_id")
 
-        if not username or not (google_id or facebook_id or apple_id):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if not username:
+            return Response(
+                {str(UserAPIError.USER_INFO_EMPTY_USER_NAME)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not (google_id or facebook_id or apple_id):
+            return Response(
+                {str(UserAPIError.USER_INFO_EMPTY_SNS_ID)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if google_id:
             user = authenticate(username="google_id:" + username, google_id=google_id)
@@ -60,7 +70,10 @@ class UserViewSet(APIKeyModelViewSet):
             )
             return Response(data={"token": encoded_jwt, "pk": user.pk})
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {str(UserAPIError.FAILED_TO_LOGIN)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
     @action(detail=True)
     def favorites(self, request, pk):
@@ -89,9 +102,15 @@ class UserViewSet(APIKeyModelViewSet):
                     user.favorite.add(restaurant)
                 return Response()
             except Restaurants.DoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {str(UserAPIError.USER_FAVORITE_INVALID_RESTAURANT)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {str(UserAPIError.USER_FAVORITE_INVALID_RESTAURANT)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     @action(detail=True)
     def subscribes(self, request, pk):
@@ -120,6 +139,12 @@ class UserViewSet(APIKeyModelViewSet):
                     user.subscribe.add(youtube_channel)
                 return Response()
             except YoutubeChannel.DoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {str(UserAPIError.USER_SUBSCRIBE_INVALID_CHANNEL)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {str(UserAPIError.USER_SUBSCRIBE_INVALID_CHANNEL)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
