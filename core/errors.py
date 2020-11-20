@@ -16,3 +16,4 @@ class ResponseCode(object):
     RESPONSE_OK = 1
     NOT_FOUND = 2
     INVALID_PARAMETER = 3
+    NEED_AUTH = 4
