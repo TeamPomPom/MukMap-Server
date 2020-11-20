@@ -4,12 +4,12 @@ class ErrorCollection(object):
         self.status = status
         self.message = message
 
-    def as_json_object(self):
-        return '{"error_code": "%s", "status_code": "%s", "message": "%s"}' % (
-            self.error_code,
-            self.status,
-            self.message,
-        )
+    def __str__(self):
+        error_msg = {}
+        error_msg["error_code"] = self.error_code
+        error_msg["status"] = self.status
+        error_msg["message"] = self.message
+        return str(error_msg)
 
 
 class ResponseCode(object):
