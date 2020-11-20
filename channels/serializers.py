@@ -2,6 +2,7 @@ from django.db.models import Q, Count, Sum
 from rest_framework import serializers
 from .models import YoutubeChannel
 from .validates import datetime_validate
+from .errors import ChannelAPIError
 from foods.models import MainFoodCategory
 from restaurants.models import Restaurants
 from restaurants.validates import isProperProvince, convertProvince
@@ -24,7 +25,9 @@ class YoutubeChannelSerializer(serializers.ModelSerializer):
             .filter(channel_id=validated_data.get("channel_id"))
             .exists()
         ):
-            raise serializers.ValidationError("Sign up process already done")
+            raise serializers.ValidationError(
+                ChannelAPIError.CREATE_CHANNEL_ALREADY_REGISTERED
+            )
         request = self.context.get("request")
         channels = super().create(validated_data)
         channels.status = YoutubeChannel.WANT_SIGN_UP
@@ -49,7 +52,9 @@ class YoutubeChannelDetailSerializer(serializers.ModelSerializer):
         end_date = request.query_params.get("end_date", None)
 
         if top_n <= 0:
-            raise serializers.ValidationError("top_n must be natural number")
+            raise serializers.ValidationError(
+                ChannelAPIError.GET_CHANNEL_DETAIL_INVALID_TOP_N_VARIABLE
+            )
 
         video_query_set = channel.youtube_videos.values_list("restaurant")
         if start_date:
@@ -107,7 +112,9 @@ class YoutubeChannelDetailSerializer(serializers.ModelSerializer):
         end_date = request.query_params.get("end_date", None)
 
         if top_n <= 0:
-            raise serializers.ValidationError("top_n must be natural number")
+            raise serializers.ValidationError(
+                ChannelAPIError.GET_CHANNEL_DETAIL_INVALID_TOP_N_VARIABLE
+            )
 
         video_query_set = channel.youtube_videos.values_list("main_food_category")
         if start_date:

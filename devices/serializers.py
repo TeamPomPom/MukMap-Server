@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Device
+from .errors import DeviceAPIError
 
 
 class DeviceSerializer(serializers.ModelSerializer):
@@ -11,7 +12,9 @@ class DeviceSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         request_device_token = validated_data.get("device_token")
         if not request_device_token:
-            raise serializers.ValidationError("Need device token")
+            raise serializers.ValidationError(
+                DeviceAPIError.CREATE_DEVICE_EMPTY_DEVICE_TOKEN
+            )
         try:
             device = Device.objects.get(device_token=request_device_token)
             user = request.user

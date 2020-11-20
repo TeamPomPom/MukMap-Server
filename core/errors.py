@@ -18,3 +18,4 @@ class ResponseCode(object):
     INVALID_PARAMETER = 3
     NEED_AUTH = 4
     DUPLICATE_PROPERTY = 5
+    ALREADY_PROCESSED = 6
