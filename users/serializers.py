@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, UserSubscribeChannel, UserFavoriteRestaurant
+from .errors import UserAPIError
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
         if apple_id:
             sns_cnt += 1
         if sns_cnt != 1:
-            raise serializers.ValidationError("You must send SNS id properly")
+            raise serializers.ValidationError(UserAPIError.USER_INFO_EMPTY_SNS_ID)
         if not self.instance:
             username = data.get("username")
             if google_id:
@@ -34,7 +35,9 @@ class UserSerializer(serializers.ModelSerializer):
             elif apple_id:
                 username = "apple_id:" + username
             if User.objects.filter(username=username).exists():
-                raise serializers.ValidationError("User " + username + " already exist")
+                raise serializers.ValidationError(
+                    UserAPIError.CREATE_USER_DUPLICATE_USER
+                )
         return data
 
     def create(self, validated_data):
@@ -49,7 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
         elif apple_id:
             username = "apple_id:" + username
         if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError("User already exist")
+            raise serializers.ValidationError(UserAPIError.CREATE_USER_DUPLICATE_USER)
         user = super().create(validated_data)
         user.username = username
         user.set_unusable_password()
