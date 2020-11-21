@@ -253,7 +253,7 @@ class RestaurantViewSet(APIKeyModelViewSet):
             ).distinct()
 
         result_restaurant = Restaurants.objects.filter(
-            id__in=youtube_videos.values_list("id")
+            id__in=youtube_videos.values_list("restaurant")
         ).distinct()
 
         paginator = Paginator(result_restaurant, page_size)
