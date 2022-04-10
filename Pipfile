@@ -9,7 +9,7 @@ flake8 = "*"
 
 [packages]
 django = "==2.2.16"
-zappa = "*"
+zappa = "==0.54.1"
 boto3 = "*"
 django-dotenv = "*"
 pillow = "*"
