@@ -4,7 +4,7 @@ from .managers import SoftDeleteManager, RemovedOldDataQueryManager
 
 
 class SoftDeletionModel(models.Model):
-    deleted = models.DateTimeField(null=True)
+    deleted = models.DateTimeField(null=True, blank=True)
     objects = SoftDeleteManager()
 
     class Meta:
@@ -16,7 +16,7 @@ class SoftDeletionModel(models.Model):
 
 
 class RemovedOldDataModel(models.Model):
-    deleted = models.DateTimeField(null=True)
+    deleted = models.DateTimeField(null=True, blank=True)
     objects = RemovedOldDataQueryManager()
 
     class Meta:
