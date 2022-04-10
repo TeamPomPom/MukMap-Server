@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from core import models as core_models
+from django.contrib.auth.models import UserManager
 
 
 class User(core_models.TimeStampedModel, AbstractUser):
@@ -16,6 +17,8 @@ class User(core_models.TimeStampedModel, AbstractUser):
     google_id = models.CharField(max_length=150, null=True, blank=True)
     facebook_id = models.CharField(max_length=150, null=True, blank=True)
     apple_id = models.CharField(max_length=150, null=True, blank=True)
+
+    objects = UserManager()
 
     def __str__(self):
         return self.username

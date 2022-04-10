@@ -42,6 +42,7 @@ urlpatterns = [
     path("api/v1/videos/", include("videos.urls")),
     path("api/v1/devices/", include("devices.urls")),
     path("api/v1/foods/", include("foods.urls")),
+    path("api/v1/configs/", include("apps.urls")),
 ]
 
 if not settings.SERVICE:
