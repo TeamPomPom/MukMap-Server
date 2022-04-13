@@ -24,15 +24,3 @@ class UserAPIError(object):
         status=ResponseCode.DUPLICATE_PROPERTY,
         message="User already exist.",
     )
-
-    USER_FAVORITE_INVALID_RESTAURANT = ErrorCollection(
-        error_code="USER_FAVORITE_INVALID_RESTAURANT",
-        status=ResponseCode.INVALID_PARAMETER,
-        message="Improper restaurant id, please check restaurant data.",
-    )
-
-    USER_SUBSCRIBE_INVALID_CHANNEL = ErrorCollection(
-        error_code="USER_SUBSCRIBE_INVALID_CHANNEL",
-        status=ResponseCode.INVALID_PARAMETER,
-        message="Improper channel id, please check channel data.",
-    )

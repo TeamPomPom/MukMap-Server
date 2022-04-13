@@ -13,3 +13,13 @@ class DeviceAPIError(object):
         status=ResponseCode.INVALID_PARAMETER,
         message="You must send proper video data.",
     )
+    DEVICE_FAVORITE_INVALID_RESTAURANT = ErrorCollection(
+        error_code="DEVICE_FAVORITE_INVALID_RESTAURANT",
+        status=ResponseCode.INVALID_PARAMETER,
+        message="Improper restaurant id, please check restaurant data.",
+    )
+    DEVICE_SUBSCRIBE_INVALID_CHANNEL = ErrorCollection(
+        error_code="DEVICE_SUBSCRIBE_INVALID_CHANNEL",
+        status=ResponseCode.INVALID_PARAMETER,
+        message="Improper channel id, please check channel data.",
+    )

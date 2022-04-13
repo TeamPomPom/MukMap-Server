@@ -2,9 +2,9 @@ from rest_framework import serializers
 from config.global_utils import common_list
 from .models import Restaurants
 from channels.models import YoutubeChannel
-from users.models import UserSubscribeChannel, UserFavoriteRestaurant
 from videos.models import YoutubeVideo
 from foods.models import SubFoodCategory, MainFoodCategory
+from devices.models import Device, DeviceSubscribeChannel, DeviceFavoriteRestaurant
 
 
 class RelatedRestaurantsSerializer(serializers.ModelSerializer):
@@ -60,8 +60,11 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
                 if request:
                     user = request.user
                     if user.is_authenticated:
-                        channel["is_subscribe"] = UserSubscribeChannel.objects.filter(
-                            user=user, youtube_channel=youtube_channel
+                        device = Device.objects.filter(
+                            user=user
+                        )
+                        channel["is_subscribe"] = DeviceSubscribeChannel.objects.filter(
+                            device=device, youtube_channel=youtube_channel
                         ).exists()
                 result_channel.append(channel)
         return result_channel
@@ -71,8 +74,11 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
         if request:
             user = request.user
             if user.is_authenticated:
-                return UserFavoriteRestaurant.objects.filter(
-                    user=user, restaurant=restaurant
+                device = Device.objects.filter(
+                    user=user
+                )
+                return DeviceFavoriteRestaurant.objects.filter(
+                    device=device, restaurant=restaurant
                 ).exists()
         return False
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserSubscribeChannel, UserFavoriteRestaurant
+from .models import User
 from .errors import UserAPIError
 
 
