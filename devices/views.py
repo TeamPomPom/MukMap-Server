@@ -7,7 +7,7 @@ from .models import Device
 from .serializers import DeviceSerializer
 from .errors import DeviceAPIError
 from config.views import APIKeyModelViewSet
-from logs.models import DeviceSearchLog, DeviceClickLog
+from logs.models import DeviceSearchLog, DeviceClickLog, DeviceFavoriteLog
 from logs.serializers import DeviceClickLogSerializer, DeviceSearchLogSerializer
 from videos.models import YoutubeVideo
 from restaurants.models import Restaurants
@@ -98,8 +98,12 @@ class DeviceViewSet(APIKeyModelViewSet):
                 )
                 if restaurant in restaurants:
                     device.favorite.remove(restaurant)
+                    device_favorite_log = DeviceFavoriteLog.objects.create(device=device, restaurant=restaurant, favorite_click=False)
+                    device_favorite_log.save()
                 else:
                     device.favorite.add(restaurant)
+                    device_favorite_log = DeviceFavoriteLog.objects.create(device=device, restaurant=restaurant, favorite_click=True)
+                    device_favorite_log.save()
                 return Response()
             except Restaurants.DoesNotExist:
                 return Response(

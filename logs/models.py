@@ -36,3 +36,20 @@ class DeviceSearchLog(core_models.TimeStampedModel):
 
     class Meta:
         db_table = "device_search_log"
+
+
+class DeviceFavoriteLog(core_models.TimeStampedModel):
+    device = models.ForeignKey(
+        "devices.Device",
+        related_name="device_favorite_logs",
+        on_delete=models.DO_NOTHING,
+    )
+    restaurant = models.ForeignKey(
+        "restaurants.Restaurants",
+        related_name="device_favorite_logs",
+        on_delete=models.CASCADE,
+    )
+    favorite_click = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "device_favorite_log"
