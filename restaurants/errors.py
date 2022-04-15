@@ -8,6 +8,12 @@ class RestaurantAPIError(object):
         message="You must send lat and lng data.",
     )
 
+    SEARCH_RESTAURANT_EMPTY_APP_NAME_INFO = ErrorCollection(
+        error_code="SEARCH_RESTAURANT_EMPTY_APP_NAME_INFO",
+        status=ResponseCode.INVALID_PARAMETER,
+        message="You must send proper app name data.",
+    )
+
     SEARCH_RESTAURANT_EMPTY_QUERY_INFO = ErrorCollection(
         error_code="SEARCH_RESTAURANT_EMPTY_QUERY_INFO",
         status=ResponseCode.INVALID_PARAMETER,

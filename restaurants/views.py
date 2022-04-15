@@ -17,6 +17,7 @@ from .serializers import (
 )
 from .renderers import QuerySearchResultRenderer
 from .errors import RestaurantAPIError
+from apps.models import ApplicationKind
 from devices.models import Device
 from logs.models import DeviceSearchLog
 from channels.models import YoutubeChannel
@@ -39,6 +40,7 @@ class RestaurantViewSet(APIKeyModelViewSet):
             or self.action == "retrieve"
             or self.action == "geo_search"
             or self.action == "query_search"
+            or self.action == "geo_search_app"
         ):
             permission_classes += [permissions.AllowAny]
         # If owner of youtube channel want to create restaurants data when create video data, owner should be login status
@@ -56,6 +58,62 @@ class RestaurantViewSet(APIKeyModelViewSet):
         return self.serializer_class
 
     @action(detail=False, methods=["get"])
+    def geo_search_app(self, request):
+        lat = request.GET.get("lat", None)
+        lng = request.GET.get("lng", None)
+        app_name = request.GET.get("app_name", None)
+        page = request.GET.get("page", 1)
+        page_size = settings.DEFAULT_PAGE_SIZE
+
+        if not lat or not lng:
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_GEO_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        application_exist = ApplicationKind.objects.filter(application_name=app_name).exists()
+
+        if not application_exist:
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_APP_NAME_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        lat = float(lat)
+        lng = float(lng)
+        search_pos = (lat, lng)
+        square_restaurants = Restaurants.objects.filter(
+            lat__range=(lat - 0.01, lat + 0.01),
+            lng__range=(lng - 0.015, lng + 0.015),
+        )
+
+        application = ApplicationKind.objects.get(application_name=app_name)
+        channel = application.channel
+
+        youtube_videos = YoutubeVideo.objects.filter(
+            Q(restaurant__id__in=square_restaurants.values_list("id"))
+            & Q(youtube_channel=channel)
+        ).distinct()
+
+        result_restaurant = Restaurants.objects.filter(
+            id__in=youtube_videos.values_list("restaurant")
+        ).distinct()
+
+        paginator = Paginator(result_restaurant, page_size)
+        try:
+            page = paginator.validate_number(page)
+            result_restaurant = paginator.get_page(page)
+        except EmptyPage:
+            result_restaurant = Restaurants.objects.none()
+
+        restaurant_serializer = SearchRestaurantSerializer(
+            result_restaurant, many=True, context={"request": request}
+        )
+        response_dict = {"restaurants": restaurant_serializer.data}
+        return Response(response_dict)
+
+
+    @action(detail=False, methods=["get"])
     def geo_search(self, request):
         lat = request.GET.get("lat", None)
         lng = request.GET.get("lng", None)
@@ -70,13 +128,13 @@ class RestaurantViewSet(APIKeyModelViewSet):
         lat = float(lat)
         lng = float(lng)
         search_pos = (lat, lng)
-        squar_restaurants = Restaurants.objects.filter(
+        square_restaurants = Restaurants.objects.filter(
             lat__range=(lat - 0.01, lat + 0.01),
             lng__range=(lng - 0.015, lng + 0.015),
         )
         circle_restaurants = [
             restuarant
-            for restuarant in squar_restaurants
+            for restuarant in square_restaurants
             if haversine(search_pos, (restuarant.lat, restuarant.lng)) <= 2
         ]
         paginator = Paginator(circle_restaurants, page_size)

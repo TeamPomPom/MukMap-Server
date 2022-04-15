@@ -44,6 +44,11 @@ class ApplicationKind(core_models.TimeStampedModel):
     """ Application Kind """
 
     application_name = models.CharField(max_length=50, blank=True)
+    channel = models.ForeignKey(
+        "channels.YoutubeChannel",
+        related_name="application_kind",
+        on_delete=models.DO_NOTHING,
+    )
 
     class Meta:
         db_table = "application_kind"
