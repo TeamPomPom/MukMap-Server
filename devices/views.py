@@ -23,20 +23,34 @@ class DeviceViewSet(APIKeyModelViewSet):
     def get_permissions(self):
         permission_classes = self.get_base_permission()
         if (
-            self.action == "create"
-            or self.action == "update"
-            or self.action == "partial_update"
-            or self.action == "write_click_log"
+                self.action == "create"
+                or self.action == "update"
+                or self.action == "partial_update"
+                or self.action == "write_click_log"
+                or self.action == "get_device"
         ):
             permission_classes += [AllowAny]
         elif (self.action == "favorites"
-            or self.action == "toggle_favorites"
-            or self.action == "subscribes"
-            or self.action == "toggle_subscribes"):
+              or self.action == "toggle_favorites"
+              or self.action == "subscribes"
+              or self.action == "toggle_subscribes"):
             permission_classes += [IsOwner]
         else:
             permission_classes += [IsAdminUser]
         return [permission() for permission in permission_classes]
+
+    @action(detail=False, methods=["get"])
+    def get_device(self, request):
+        device_token = request.headers.get("Device", None)
+        try:
+            device = Device.objects.get(device_token=device_token)
+            serializer = DeviceSerializer(device, read_only=True, many=False)
+            return Response(serializer.data)
+        except Device.DoesNotExist:
+            return Response(
+                {str(DeviceAPIError.NEED_TO_CREATE_DEVICE_RECORD)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
     @action(detail=True, methods=["get"])
     def search(self, request, pk):
@@ -98,11 +112,13 @@ class DeviceViewSet(APIKeyModelViewSet):
                 )
                 if restaurant in restaurants:
                     device.favorite.remove(restaurant)
-                    device_favorite_log = DeviceFavoriteLog.objects.create(device=device, restaurant=restaurant, favorite_click=False)
+                    device_favorite_log = DeviceFavoriteLog.objects.create(device=device, restaurant=restaurant,
+                                                                           favorite_click=False)
                     device_favorite_log.save()
                 else:
                     device.favorite.add(restaurant)
-                    device_favorite_log = DeviceFavoriteLog.objects.create(device=device, restaurant=restaurant, favorite_click=True)
+                    device_favorite_log = DeviceFavoriteLog.objects.create(device=device, restaurant=restaurant,
+                                                                           favorite_click=True)
                     device_favorite_log.save()
                 return Response()
             except Restaurants.DoesNotExist:

@@ -18,8 +18,12 @@ class DeviceSerializer(serializers.ModelSerializer):
         try:
             device = Device.objects.get(device_token=request_device_token)
             user = request.user
+            if user.is_anonymous:
+                raise serializers.ValidationError(
+                    DeviceAPIError.ALREADY_REGISTERED_DEVICE
+                )
             device_user = device.user
-            if user and (user != device.user or not device_user):
+            if user != device.user or not device_user:
                 device.user = request.user
                 device.save()
                 return device
