@@ -24,7 +24,7 @@ class ApplicationConfig(core_models.TimeStampedModel):
         verbose_name_plural = "Application version configs"
 
     def __str__(self):
-        return f'{self.platform} {self.application_name}, min version : {self.min_app_version}, curr version : {self.curr_app_version}'
+        return f'{self.platform} {self.application}, min version : {self.min_app_version}, curr version : {self.curr_app_version}'
 
 
 class ApplicationPlatform(core_models.TimeStampedModel):
