@@ -14,6 +14,7 @@ from .serializers import (
     RestaurantsSerializer,
     SearchRestaurantSerializer,
     RestaurantDetailSerializer,
+    AppSearchRestaurantSerializer
 )
 from .renderers import QuerySearchResultRenderer
 from .errors import RestaurantAPIError
@@ -41,6 +42,7 @@ class RestaurantViewSet(APIKeyModelViewSet):
             or self.action == "geo_search"
             or self.action == "query_search"
             or self.action == "geo_search_app"
+            or self.action == "app_restaurants"
         ):
             permission_classes += [permissions.AllowAny]
         # If owner of youtube channel want to create restaurants data when create video data, owner should be login status
@@ -56,6 +58,44 @@ class RestaurantViewSet(APIKeyModelViewSet):
         if self.action == "retrieve":
             return RestaurantDetailSerializer
         return self.serializer_class
+
+    @action(detail=False, methods=["get"])
+    def app_restaurants(self, request):
+        app_name = request.GET.get("app_name", None)
+        page = request.GET.get("page", 1)
+        page_size = request.GET.get("page_size", settings.DEFAULT_PAGE_SIZE)
+
+        application_exist = ApplicationKind.objects.filter(application_name=app_name).exists()
+
+        if not application_exist:
+            return Response(
+                {str(RestaurantAPIError.SEARCH_RESTAURANT_EMPTY_APP_NAME_INFO)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        application = ApplicationKind.objects.get(application_name=app_name)
+        channel = application.channel
+
+        youtube_videos = YoutubeVideo.objects.filter(
+            youtube_channel=channel
+        ).distinct()
+
+        result_restaurant = Restaurants.objects.filter(
+            id__in=youtube_videos.values_list("restaurant")
+        ).distinct()
+
+        paginator = Paginator(result_restaurant, page_size)
+        try:
+            page = paginator.validate_number(page)
+            result_restaurant = paginator.get_page(page)
+        except EmptyPage:
+            result_restaurant = Restaurants.objects.none()
+
+        restaurant_serializer = AppSearchRestaurantSerializer(
+            result_restaurant, many=True, context={"request": request, "youtube_videos": youtube_videos}
+        )
+        response_dict = {"restaurants": restaurant_serializer.data}
+        return Response(response_dict)
 
     @action(detail=False, methods=["get"])
     def geo_search_app(self, request):

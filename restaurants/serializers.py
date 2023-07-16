@@ -13,6 +13,43 @@ class RelatedRestaurantsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class AppSearchRestaurantSerializer(serializers.ModelSerializer):
+
+    youtube_video = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Restaurants
+        fields = (
+            "id",
+            "name",
+            "lat",
+            "lng",
+            "full_address",
+            "youtube_video",
+        )
+        read_only_fields = (
+            "id",
+            "name",
+            "lat",
+            "lng",
+            "full_address",
+            "youtube_video",
+        )
+
+    def get_youtube_video(self, restaurant):
+        request = self.context.get("request")
+        youtube_videos = self.context.get("youtube_videos")
+        result = []
+        video = {}
+        youtube_video = youtube_videos.filter(restaurant=restaurant).first()
+        if youtube_video:
+            video["youtube_url"] = "https://www.youtube.com/watch?v=" + str(youtube_video.youtube_video_id)
+            video["youtube_thumbnail"] = youtube_video.youtube_video_thumbnail
+            video["naver_place_id"] = str(restaurant.naver_map_place_id)
+            video["naver_place_url"] = "https://m.place.naver.com/restaurant/" + str(restaurant.naver_map_place_id) + "/home"
+            result.append(video)
+        return result
+
 class SearchRestaurantSerializer(serializers.ModelSerializer):
 
     youtube_channel = serializers.SerializerMethodField()
