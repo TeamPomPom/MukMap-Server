@@ -15,6 +15,8 @@ class Restaurants(core_models.TimeStampedModel):
         "subways.Subway", related_name="restaurants", through="SubwaysNearRestaurants"
     )
 
+    naver_map_place_id = models.CharField(max_length=100, blank=True, null=True)
+
     class Meta:
         db_table = "restuarant"
 
