@@ -22,9 +22,10 @@ class RemovedOldDataQueryManager(SoftDeleteManager):
         return (
             super()
             .get_queryset(*args, **kwargs)
-            .filter(
-                youtube_video_published_at__gte=timezone.now().replace(
-                    year=timezone.now().year - 2
-                )
-            )
+            # TODO : 추후 수정 필요 
+            # .filter(
+            #     youtube_video_published_at__gte=timezone.now().replace(
+            #         year=timezone.now().year - 20
+            #     )
+            # )
         )

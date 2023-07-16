@@ -29,13 +29,13 @@ class YoutubeVideo(core_models.RemovedOldDataTimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
     )
-    embeddable = models.BooleanField()
+    embeddable = models.BooleanField(null=True, blank=True)
 
     youtube_video_thumbnail = models.TextField()
     youtube_video_tags = models.TextField(blank=True)
-    youtube_video_duration = models.IntegerField()
-    youtube_video_start_time = models.IntegerField()
-    youtube_video_published_at = models.DateTimeField()
+    youtube_video_duration = models.IntegerField(null=True, blank=True)
+    youtube_video_start_time = models.IntegerField(null=True, blank=True)
+    youtube_video_published_at = models.DateTimeField(null=True, blank=True)
     is_advertising = models.BooleanField(default=False, null=False)
 
     # For localized video title
