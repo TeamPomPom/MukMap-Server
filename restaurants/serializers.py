@@ -1,7 +1,7 @@
 from rest_framework import serializers
+from ast import literal_eval
 from config.global_utils import common_list
 from .models import Restaurants
-from channels.models import YoutubeChannel
 from videos.models import YoutubeVideo
 from foods.models import SubFoodCategory, MainFoodCategory
 from devices.models import Device, DeviceSubscribeChannel, DeviceFavoriteRestaurant
@@ -14,7 +14,6 @@ class RelatedRestaurantsSerializer(serializers.ModelSerializer):
 
 
 class AppSearchRestaurantSerializer(serializers.ModelSerializer):
-
     youtube_video = serializers.SerializerMethodField()
 
     class Meta:
@@ -44,14 +43,17 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
         youtube_video = youtube_videos.filter(restaurant=restaurant).first()
         if youtube_video:
             video["youtube_url"] = "https://www.youtube.com/watch?v=" + str(youtube_video.youtube_video_id)
-            video["youtube_thumbnail"] = youtube_video.youtube_video_thumbnail
-            video["naver_place_id"] = str(restaurant.naver_map_place_id)
+            try:
+                sorted_by_width = sorted(literal_eval(youtube_video.youtube_video_thumbnail).items(), key=lambda x: -x[1]['width'])
+                video["youtube_thumbnail"] = str(next(iter(sorted_by_width))[1]['url'])
+            except:
+                video["youtube_thumbnail"] = ""
             video["naver_place_url"] = "https://m.place.naver.com/restaurant/" + str(restaurant.naver_map_place_id) + "/home"
             result.append(video)
         return result
 
-class SearchRestaurantSerializer(serializers.ModelSerializer):
 
+class SearchRestaurantSerializer(serializers.ModelSerializer):
     youtube_channel = serializers.SerializerMethodField()
     is_favorite = serializers.SerializerMethodField()
 
@@ -87,8 +89,8 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
             channel = {}
             youtube_channel = video.youtube_channel
             if not any(
-                channel_data["channel_id"] == youtube_channel.id
-                for channel_data in result_channel
+                    channel_data["channel_id"] == youtube_channel.id
+                    for channel_data in result_channel
             ):
                 channel["channel_id"] = youtube_channel.id
                 channel["channel_name"] = youtube_channel.channel_name
@@ -121,7 +123,6 @@ class SearchRestaurantSerializer(serializers.ModelSerializer):
 
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):
-
     tags = serializers.SerializerMethodField()
 
     class Meta:
