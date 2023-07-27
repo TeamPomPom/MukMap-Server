@@ -18,6 +18,7 @@ class ApplicationConfig(core_models.TimeStampedModel):
         related_name="application_config",
         on_delete=models.DO_NOTHING
     )
+    data_version = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = "app_version_config"
