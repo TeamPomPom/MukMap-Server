@@ -38,7 +38,6 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
     def get_youtube_video(self, restaurant):
         request = self.context.get("request")
         youtube_videos = self.context.get("youtube_videos")
-        result = []
         video = {}
         youtube_video = youtube_videos.filter(restaurant=restaurant).first()
         if youtube_video:
@@ -49,8 +48,7 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
             except:
                 video["youtube_thumbnail"] = ""
             video["naver_place_url"] = "https://m.place.naver.com/restaurant/" + str(restaurant.naver_map_place_id) + "/home"
-            result.append(video)
-        return result
+        return video
 
 
 class SearchRestaurantSerializer(serializers.ModelSerializer):
