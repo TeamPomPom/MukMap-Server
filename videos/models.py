@@ -63,6 +63,8 @@ class YoutubeVideo(core_models.RemovedOldDataTimeStampedModel):
 
     youtube_video_memos = models.CharField(max_length=100, blank=True, null=True)
 
+    youtube_episode_num = models.IntegerField(null=True, blank=True)
+
     class Meta:
         db_table = "youtube_video"
 

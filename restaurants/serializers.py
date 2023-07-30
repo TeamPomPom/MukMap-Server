@@ -15,6 +15,8 @@ class RelatedRestaurantsSerializer(serializers.ModelSerializer):
 
 class AppSearchRestaurantSerializer(serializers.ModelSerializer):
     youtube_video = serializers.SerializerMethodField()
+    main_category = serializers.SerializerMethodField()
+    sub_category = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurants
@@ -25,6 +27,11 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
             "lng",
             "full_address",
             "youtube_video",
+            "main_category",
+            "sub_category",
+            "province",
+            "district",
+            "old_district",
         )
         read_only_fields = (
             "id",
@@ -33,6 +40,11 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
             "lng",
             "full_address",
             "youtube_video",
+            "main_category",
+            "sub_category",
+            "province"
+            "district"
+            "old_district"
         )
 
     def get_youtube_video(self, restaurant):
@@ -48,7 +60,33 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
             except:
                 video["youtube_thumbnail"] = ""
             video["naver_place_url"] = "https://m.place.naver.com/restaurant/" + str(restaurant.naver_map_place_id) + "/home"
+            video["episode_num"] = youtube_video.youtube_episode_num
         return video
+
+    def get_main_category(self, restaurant):
+        youtube_video_query_set = YoutubeVideo.objects.filter(restaurant=restaurant)
+        main_food_category_list = list(
+            youtube_video_query_set.values_list("main_food_category", flat=True)
+        )
+        result = ""
+        main_common_list = common_list(main_food_category_list, 1)
+
+        for main_common_data in main_common_list:
+            result = MainFoodCategory.objects.get(id=main_common_data[0]).name
+
+        return result
+
+    def get_sub_category(self, restaurant):
+        youtube_video_query_set = YoutubeVideo.objects.filter(restaurant=restaurant)
+        sub_food_category_list = list(
+            youtube_video_query_set.values_list("sub_food_category", flat=True)
+        )
+        sub_categories = []
+        sub_common_list = common_list(sub_food_category_list, 3)
+
+        for sub_common_data in sub_common_list:
+            sub_categories.append(SubFoodCategory.objects.get(id=sub_common_data[0]).name)
+        return sub_categories
 
 
 class SearchRestaurantSerializer(serializers.ModelSerializer):
