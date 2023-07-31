@@ -61,6 +61,7 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
                 video["youtube_thumbnail"] = ""
             video["naver_place_url"] = "https://m.place.naver.com/restaurant/" + str(restaurant.naver_map_place_id) + "/home"
             video["episode_num"] = youtube_video.youtube_episode_num
+            video["youtube_title"] = youtube_video.youtube_video_korean_title
         return video
 
     def get_main_category(self, restaurant):
