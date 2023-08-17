@@ -53,7 +53,7 @@ class AppSearchRestaurantSerializer(serializers.ModelSerializer):
         video = {}
         youtube_video = youtube_videos.filter(restaurant=restaurant).first()
         if youtube_video:
-            video["youtube_url"] = "https://www.youtube.com/watch?v=" + str(youtube_video.youtube_video_id)
+            video["youtube_video_id"] = youtube_video.youtube_video_id
             try:
                 sorted_by_width = sorted(literal_eval(youtube_video.youtube_video_thumbnail).items(), key=lambda x: -x[1]['width'])
                 video["youtube_thumbnail"] = str(next(iter(sorted_by_width))[1]['url'])
